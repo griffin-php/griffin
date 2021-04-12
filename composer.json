@@ -3,10 +3,15 @@
   "description": "Griffin is a Graph-Oriented Migration Framework for PHP",
   "type": "library",
   "license": "MIT",
+  "config": {
+    "sort-packages": true
+  },
   "require": {
     "php": ">=8.0"
   },
-  "config": {
-    "sort-packages": true
+  "extra": {
+    "branch-alias": {
+      "dev-main": "1.0.x-dev"
+    }
   }
 }
