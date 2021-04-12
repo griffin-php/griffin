@@ -16,6 +16,14 @@ class Item extends AbstractMigration
         private Driver $driver
     ) {}
 
+    public function depends(): array
+    {
+        return [
+            Order::class,
+            Product::class,
+        ];
+    }
+
     public function up(): void
     {
         $this->driver->createTable('items');
