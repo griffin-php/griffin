@@ -52,4 +52,6 @@ $migration = (new Migration())
     ->withDown(fn() => $driver->dropTable('items'))
     ->withAssert(fn() => $driver->hasTable('items'))
     ->withDepends(['orders', 'products']);
+
+$griffin->add($migration);
 ```
