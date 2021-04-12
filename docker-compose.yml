@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+
+  php:
+    build:
+      context: "."
+      args:
+        PHP_VERSION: "8.0"
