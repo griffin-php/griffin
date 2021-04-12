@@ -40,3 +40,16 @@ class Item extends AbstractMigration
     }
 }
 ```
+
+```php
+use Database\Driver;
+use Griffin\Migration\Migration;
+
+$driver = new Driver();
+
+$migration = (new Migration())
+    ->withUp(fn() => $driver->createTable('items'))
+    ->withDown(fn() => $driver->dropTable('items'))
+    ->withAssert(fn() => $driver->hasTable('items'))
+    ->withDepends(['orders', 'products']);
+```
