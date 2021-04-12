@@ -1,6 +1,7 @@
 <phpunit
     backupGlobals="true"
     backupStaticAttributes="false"
+    cacheResultFile=".phpunit.cache/test-results"
     colors="true">
     <testsuites>
         <testsuite name="default">
