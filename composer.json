@@ -1,0 +1,7 @@
+{
+  "name": "griffin/griffin",
+  "description": "Griffin is a Graph-Oriented Migration Framework for PHP",
+  "type": "library",
+  "license": "MIT",
+  "require": {}
+}
