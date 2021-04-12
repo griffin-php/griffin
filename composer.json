@@ -13,6 +13,16 @@
     "php-parallel-lint/php-parallel-lint": "1.3.*",
     "phpunit/phpunit": "9.5.4"
   },
+  "autoload": {
+    "psr-4": {
+      "Griffin\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "GriffinTest\\": "tests"
+    }
+  },
   "scripts": {
     "test": [
       "parallel-lint src tests",
