@@ -16,14 +16,6 @@ class Item extends AbstractMigration
         private Driver $driver
     ) {}
 
-    public function depends(): array
-    {
-        return [
-            Order::class,
-            Product::class,
-        ];
-    }
-
     public function up(): void
     {
         $this->driver->createTable('items');
@@ -37,6 +29,14 @@ class Item extends AbstractMigration
     public function assert(): bool
     {
         return $this->driver->hasTable('items');
+    }
+
+    public function depends(): array
+    {
+        return [
+            Order::class,
+            Product::class,
+        ];
     }
 }
 ```
