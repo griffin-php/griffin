@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GriffinTest;
 
 use Griffin\Trusty;
@@ -12,7 +14,7 @@ class TrustyTest extends TestCase
         $this->trusty = new Trusty();
     }
 
-    public function testTrue()
+    public function testTrue(): void
     {
         $this->assertTrue($this->trusty->isTrue());
     }

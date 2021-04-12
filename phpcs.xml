@@ -1,0 +1,81 @@
+<ruleset>
+
+    <arg name="encoding" value="utf-8" />
+    <arg name="extensions" value="php" />
+
+    <file>src</file>
+    <file>tests</file>
+
+    <rule ref="PSR1" />
+    <rule ref="PSR2" />
+
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax" />
+    <rule ref="Generic.Classes.DuplicateClassName" />
+    <rule ref="Generic.CodeAnalysis" />
+    <rule ref="Generic.Commenting.Todo" />
+    <rule ref="Generic.ControlStructures.InlineControlStructure" />
+    <rule ref="Generic.Files.ByteOrderMark" />
+    <rule ref="Generic.Files.EndFileNewline" />
+    <rule ref="Generic.Files.LineEndings" />
+    <rule ref="Generic.Files.OneClassPerFile" />
+    <rule ref="Generic.Files.OneInterfacePerFile" />
+    <rule ref="Generic.Files.OneTraitPerFile" />
+    <rule ref="Generic.Formatting.DisallowMultipleStatements" />
+    <rule ref="Generic.Formatting.MultipleStatementAlignment" />
+    <rule ref="Generic.Formatting.SpaceAfterCast" />
+    <rule ref="Generic.Formatting.SpaceAfterNot" />
+    <rule ref="Generic.Functions.FunctionCallArgumentSpacing" />
+    <rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman" />
+    <rule ref="Generic.Metrics.CyclomaticComplexity" />
+    <rule ref="Generic.Metrics.NestingLevel" />
+    <rule ref="Generic.NamingConventions.CamelCapsFunctionName" />
+    <rule ref="Generic.NamingConventions.ConstructorName" />
+    <rule ref="Generic.NamingConventions.UpperCaseConstantName" />
+    <rule ref="Generic.PHP.DeprecatedFunctions" />
+    <rule ref="Generic.PHP.DisallowAlternativePHPTags" />
+    <rule ref="Generic.PHP.DisallowShortOpenTag" />
+    <rule ref="Generic.PHP.LowerCaseConstant" />
+    <rule ref="Generic.PHP.LowerCaseKeyword" />
+    <rule ref="Generic.PHP.NoSilencedErrors" />
+    <rule ref="Generic.Strings.UnnecessaryStringConcat" />
+    <rule ref="Generic.WhiteSpace.DisallowTabIndent" />
+    <rule ref="Generic.WhiteSpace.ScopeIndent" />
+    <rule ref="SlevomatCodingStandard.ControlStructures.RequireNullCoalesceEqualOperator" />
+    <rule ref="SlevomatCodingStandard.Functions.RequireArrowFunction" />
+    <rule ref="SlevomatCodingStandard.Namespaces.AlphabeticallySortedUses" />
+    <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses" />
+    <rule ref="SlevomatCodingStandard.TypeHints.NullableTypeForNullDefaultValue" />
+    <rule ref="SlevomatCodingStandard.TypeHints.ParameterTypeHint" />
+    <rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHint" />
+    <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint" />
+    <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing" />
+    <rule ref="SlevomatCodingStandard.TypeHints.UselessConstantTypeHint" />
+
+    <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace">
+        <properties>
+            <property name="ignoreBlankLines" value="false" />
+        </properties>
+    </rule>
+
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="absoluteLineLimit" value="120" />
+        </properties>
+    </rule>
+
+    <rule ref="SlevomatCodingStandard.Commenting.ForbiddenAnnotations">
+        <properties>
+            <property name="forbiddenAnnotations" type="array">
+                <element value="@type" />
+            </property>
+        </properties>
+    </rule>
+
+    <rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes">
+        <properties>
+            <property name="spacesCountAroundEqualsSign" value="0" />
+            <property name="newlinesCountBetweenOpenTagAndDeclare" value="2" />
+        </properties>
+    </rule>
+
+</ruleset>
