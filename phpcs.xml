@@ -3,6 +3,8 @@
     <arg name="encoding" value="utf-8" />
     <arg name="extensions" value="php" />
 
+    <config name="ignore_warnings_on_exit" value="true" />
+
     <file>src</file>
     <file>tests</file>
 
