@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace GriffinTest\Migration;
 
-use Griffin\Migration\AbstractMigration;
+use Griffin\Migration\MigrationInterface;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class AbstractMigrationTest extends TestCase
+class MigrationInterfaceTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->reflection = new ReflectionClass(AbstractMigration::class);
+        $this->reflection = new ReflectionClass(MigrationInterface::class);
     }
 
     public function testAssert(): void
