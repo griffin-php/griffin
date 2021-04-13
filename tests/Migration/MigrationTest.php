@@ -27,6 +27,8 @@ class MigrationTest extends TestCase
 
         $this->assertNotSame('foobar', $this->migration->getName());
         $this->assertNotSame($this->migration, $migration); // Immutability
+
+        $this->assertSame(Migration::class, $this->migration->getName());
         $this->assertSame('foobar', $migration->getName());
     }
 
