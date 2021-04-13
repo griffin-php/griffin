@@ -28,4 +28,15 @@ class MigrationTest extends TestCase
         $this->assertNull($this->migration->down());
         $this->assertFalse($this->migration->assert());
     }
+
+    public function testWithAssert(): void
+    {
+        $assert = fn() => false;
+
+        $migration = $this->migration->withAssert($assert);
+
+        $this->assertNotSame($this->migration, $migration);
+        $this->assertNull($this->migration->getAssert());
+        $this->assertSame($assert, $migration->getAssert());
+    }
 }
