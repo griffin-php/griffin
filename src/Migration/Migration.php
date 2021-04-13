@@ -50,6 +50,10 @@ class Migration implements MigrationInterface
     {
         $migration = clone($this);
 
+        if (!$assert instanceof Closure) {
+            $assert = Closure::fromCallable($assert);
+        }
+
         $migration->assert = $assert;
 
         return $migration;

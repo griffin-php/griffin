@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace GriffinTest\Migration;
 
+use Closure;
 use Griffin\Migration\Migration;
 use Griffin\Migration\MigrationInterface;
 use PHPUnit\Framework\TestCase;
@@ -38,6 +39,17 @@ class MigrationTest extends TestCase
         $this->assertNotSame($this->migration, $migration);
         $this->assertNull($this->migration->getAssert());
         $this->assertSame($noop, $migration->getAssert());
+    }
+
+    public function testWithAssertCallable(): void
+    {
+        $object = new class{
+            public function noop(): void {}
+        };
+
+        $migration = $this->migration->withAssert([$object, 'noop']);
+
+        $this->assertInstanceOf(Closure::class, $migration->getAssert());
     }
 
     public function testWithUp(): void
