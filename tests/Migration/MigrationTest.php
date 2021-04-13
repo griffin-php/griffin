@@ -60,4 +60,13 @@ class MigrationTest extends TestCase
         $this->assertNull($this->migration->getUp());
         $this->assertSame($noop, $migration->getUp());
     }
+
+    public function testWithUpCallable(): void
+    {
+        $object = new Operator();
+
+        $migration = $this->migration->withUp([$object, 'noop']);
+
+        $this->assertInstanceOf(Closure::class, $migration->getUp());
+    }
 }

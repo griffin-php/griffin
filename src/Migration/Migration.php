@@ -69,6 +69,10 @@ class Migration implements MigrationInterface
     {
         $migration = clone($this);
 
+        if (! $up instanceof Closure) {
+            $up = Closure::fromCallable($up);
+        }
+
         $migration->up = $up;
 
         return $migration;
