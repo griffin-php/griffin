@@ -48,6 +48,13 @@ class MigrationTest extends TestCase
         $this->assertInstanceOf(Closure::class, $migration->getAssert());
     }
 
+    public function testWithAssertInvokable(): void
+    {
+        $migration = $this->migration->withAssert(new Operator());
+
+        $this->assertInstanceOf(Closure::class, $migration->getAssert());
+    }
+
     public function testWithUp(): void
     {
         $noop = fn() => null;
@@ -62,6 +69,13 @@ class MigrationTest extends TestCase
     public function testWithUpCallable(): void
     {
         $migration = $this->migration->withUp([new Operator(), 'noop']);
+
+        $this->assertInstanceOf(Closure::class, $migration->getUp());
+    }
+
+    public function testWithUpInvokable(): void
+    {
+        $migration = $this->migration->withUp(new Operator());
 
         $this->assertInstanceOf(Closure::class, $migration->getUp());
     }
