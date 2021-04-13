@@ -13,7 +13,7 @@ use Griffin\Migration\MigrationInterface;
 class Item implements MigrationInterface
 {
     public function __construct(
-        private Driver $driver
+        private Driver $driver,
     ) {}
 
     public function up(): void
@@ -48,6 +48,7 @@ use Griffin\Migration\Migration;
 $driver = new Driver();
 
 $migration = (new Migration())
+    ->withName('items')
     ->withUp(fn() => $driver->createTable('items'))
     ->withDown(fn() => $driver->dropTable('items'))
     ->withAssert(fn() => $driver->hasTable('items'))
