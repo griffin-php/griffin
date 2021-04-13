@@ -14,4 +14,9 @@ interface MigrationInterface
     public function down(): void;
 
     public function assert(): bool;
+
+    /**
+     * @return string[]
+     */
+    public function depends(): array;
 }
