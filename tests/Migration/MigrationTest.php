@@ -21,6 +21,15 @@ class MigrationTest extends TestCase
         $this->assertInstanceOf(MigrationInterface::class, $this->migration);
     }
 
+    public function testName(): void
+    {
+        $migration = $this->migration->withName('foobar');
+
+        $this->assertNotSame('foobar', $this->migration->getName());
+        $this->assertNotSame($this->migration, $migration); // Immutability
+        $this->assertSame('foobar', $migration->getName());
+    }
+
     public function testDefault(): void
     {
         $this->assertFalse($this->migration->assert());

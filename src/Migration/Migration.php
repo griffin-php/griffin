@@ -13,6 +13,8 @@ use Closure;
  */
 class Migration implements MigrationInterface
 {
+    protected ?string $name;
+
     protected bool $status = false;
 
     protected ?Closure $assert = null;
@@ -21,7 +23,16 @@ class Migration implements MigrationInterface
 
     public function getName(): string
     {
-        return '';
+        return $this->name ?? self::class;
+    }
+
+    public function withName(string $name): self
+    {
+        $migration = clone($this);
+
+        $migration->name = $name;
+
+        return $migration;
     }
 
     public function up(): void
