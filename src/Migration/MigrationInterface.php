@@ -6,6 +6,8 @@ namespace Griffin\Migration;
 
 interface MigrationInterface
 {
+    public function getName(): string;
+
     /**
      * @SuppressWarnings(PHPMD.ShortMethodName)
      */

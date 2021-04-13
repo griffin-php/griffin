@@ -20,6 +20,15 @@ class MigrationInterfaceTest extends TestCase
         $this->assertTrue($this->reflection->isInterface());
     }
 
+    public function testName(): void
+    {
+        $method = $this->reflection->getMethod('getName');
+
+        $this->assertTrue($method->isPublic());
+        $this->assertEquals(0, $method->getNumberOfParameters());
+        $this->assertEquals('string', (string) $method->getReturnType());
+    }
+
     public function testAssert(): void
     {
         $method = $this->reflection->getMethod('assert');

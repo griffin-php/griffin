@@ -19,6 +19,11 @@ class Migration implements MigrationInterface
 
     protected ?Closure $up = null;
 
+    public function getName(): string
+    {
+        return '';
+    }
+
     public function up(): void
     {
         $this->status = true;
