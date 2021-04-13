@@ -6,15 +6,18 @@ namespace Griffin\Migration;
 
 use Closure;
 
+/**
+ * @SuppressWarnings(PHPMD.ShortMethodName)
+ * @SuppressWarnings(PHPMD.ShortVariable)
+ */
 class Migration implements MigrationInterface
 {
     protected bool $status = false;
 
     protected ?Closure $assert = null;
 
-    /**
-     * @SuppressWarnings(PHPMD.ShortMethodName)
-     */
+    protected ?Closure $up = null;
+
     public function up(): void
     {
         $this->status = true;
@@ -48,6 +51,20 @@ class Migration implements MigrationInterface
         $migration = clone($this);
 
         $migration->assert = $assert;
+
+        return $migration;
+    }
+
+    public function getUp(): ?callable
+    {
+        return $this->up;
+    }
+
+    public function withUp(callable $up): self
+    {
+        $migration = clone($this);
+
+        $migration->up = $up;
 
         return $migration;
     }

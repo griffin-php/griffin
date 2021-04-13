@@ -31,12 +31,23 @@ class MigrationTest extends TestCase
 
     public function testWithAssert(): void
     {
-        $assert = fn() => false;
+        $noop = fn() => null;
 
-        $migration = $this->migration->withAssert($assert);
+        $migration = $this->migration->withAssert($noop);
 
         $this->assertNotSame($this->migration, $migration);
         $this->assertNull($this->migration->getAssert());
-        $this->assertSame($assert, $migration->getAssert());
+        $this->assertSame($noop, $migration->getAssert());
+    }
+
+    public function testWithUp(): void
+    {
+        $noop = fn() => null;
+
+        $migration = $this->migration->withUp($noop);
+
+        $this->assertNotSame($this->migration, $migration);
+        $this->assertNull($this->migration->getUp());
+        $this->assertSame($noop, $migration->getUp());
     }
 }
