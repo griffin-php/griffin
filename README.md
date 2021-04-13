@@ -8,9 +8,9 @@ Griffin is a Graph-Oriented Migration Framework for PHP
 namespace Database\Migration\Table;
 
 use Database\Driver;
-use Griffin\Migration\AbstractMigration;
+use Griffin\Migration\MigrationInterface;
 
-class Item extends AbstractMigration
+class Item implements MigrationInterface
 {
     public function __construct(
         private Driver $driver
