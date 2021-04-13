@@ -43,9 +43,7 @@ class MigrationTest extends TestCase
 
     public function testWithAssertCallable(): void
     {
-        $object = new class{
-            public function noop(): void {}
-        };
+        $object = new Operator();
 
         $migration = $this->migration->withAssert([$object, 'noop']);
 

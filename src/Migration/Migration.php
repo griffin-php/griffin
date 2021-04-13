@@ -9,6 +9,7 @@ use Closure;
 /**
  * @SuppressWarnings(PHPMD.ShortMethodName)
  * @SuppressWarnings(PHPMD.ShortVariable)
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class Migration implements MigrationInterface
 {
@@ -50,7 +51,7 @@ class Migration implements MigrationInterface
     {
         $migration = clone($this);
 
-        if (!$assert instanceof Closure) {
+        if (! $assert instanceof Closure) {
             $assert = Closure::fromCallable($assert);
         }
 
