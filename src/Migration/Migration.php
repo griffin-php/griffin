@@ -17,7 +17,7 @@ class Migration implements MigrationInterface
 
     protected bool $status = false;
 
-    protected ?Closure $assert = null;
+    protected ?Closure $assertOperator = null;
 
     protected ?Closure $up = null;
 
@@ -60,18 +60,18 @@ class Migration implements MigrationInterface
 
     public function getAssert(): ?callable
     {
-        return $this->assert;
+        return $this->assertOperator;
     }
 
-    public function withAssert(callable $assert): self
+    public function withAssert(callable $operator): self
     {
         $migration = clone($this);
 
-        if (! $assert instanceof Closure) {
-            $assert = Closure::fromCallable($assert);
+        if (! $operator instanceof Closure) {
+            $operator = Closure::fromCallable($operator);
         }
 
-        $migration->assert = $assert;
+        $migration->assertOperator = $operator;
 
         return $migration;
     }
