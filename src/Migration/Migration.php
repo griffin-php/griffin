@@ -21,11 +21,6 @@ class Migration implements MigrationInterface
 
     protected ?Closure $up = null;
 
-    public function getName(): string
-    {
-        return $this->name ?? self::class;
-    }
-
     public function withName(string $name): self
     {
         $migration = clone($this);
@@ -33,6 +28,29 @@ class Migration implements MigrationInterface
         $migration->name = $name;
 
         return $migration;
+    }
+
+    public function getName(): string
+    {
+        return $this->name ?? self::class;
+    }
+
+    public function withAssert(callable $operator): self
+    {
+        $migration = clone($this);
+
+        if (! $operator instanceof Closure) {
+            $operator = Closure::fromCallable($operator);
+        }
+
+        $migration->assertOperator = $operator;
+
+        return $migration;
+    }
+
+    public function getAssert(): ?callable
+    {
+        return $this->assertOperator;
     }
 
     public function up(): void
@@ -60,24 +78,6 @@ class Migration implements MigrationInterface
     public function depends(): array
     {
         return [];
-    }
-
-    public function getAssert(): ?callable
-    {
-        return $this->assertOperator;
-    }
-
-    public function withAssert(callable $operator): self
-    {
-        $migration = clone($this);
-
-        if (! $operator instanceof Closure) {
-            $operator = Closure::fromCallable($operator);
-        }
-
-        $migration->assertOperator = $operator;
-
-        return $migration;
     }
 
     public function getUp(): ?callable
