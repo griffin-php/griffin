@@ -36,7 +36,7 @@ class MigrationTest extends TestCase
     {
         $migration = $this->migration->withAssert(fn() => null);
 
-        $this->assertNotSame($this->migration, $migration);
+        $this->assertNotSame($this->migration, $migration); // Immutability
     }
 
     public function testWithAssertCallable(): void
@@ -74,11 +74,9 @@ class MigrationTest extends TestCase
 
     public function testWithUp(): void
     {
-        $noop = fn() => null;
+        $migration = $this->migration->withUp(fn() => null);
 
-        $migration = $this->migration->withUp($noop);
-
-        $this->assertNotSame($this->migration, $migration);
+        $this->assertNotSame($this->migration, $migration); // Immutability
     }
 
     public function testWithUpCallable(): void
@@ -88,9 +86,7 @@ class MigrationTest extends TestCase
         $operator->expects($this->once())
             ->method('up');
 
-        $migration = $this->migration->withUp([$operator, 'up']);
-
-        $this->assertNull($migration->up());
+        $this->migration->withUp([$operator, 'up'])->up();
     }
 
     public function testWithUpInvokable(): void
@@ -100,9 +96,7 @@ class MigrationTest extends TestCase
         $operator->expects($this->once())
             ->method('__invoke');
 
-        $migration = $this->migration->withUp($operator);
-
-        $this->assertNull($migration->up());
+        $this->migration->withUp($operator)->up();
     }
 
     public function testWithoutUp(): void
