@@ -48,11 +48,6 @@ class Migration implements MigrationInterface
         return $migration;
     }
 
-    public function getAssert(): ?callable
-    {
-        return $this->assertOperator;
-    }
-
     public function up(): void
     {
         $this->status = true;
