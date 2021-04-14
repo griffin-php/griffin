@@ -72,6 +72,10 @@ class Migration implements MigrationInterface
 
     public function up(): void
     {
+        if (! $this->upOperator) {
+            throw new Exception();
+        }
+
         ($this->upOperator)();
     }
 

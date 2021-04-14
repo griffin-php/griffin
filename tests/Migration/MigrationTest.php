@@ -104,4 +104,11 @@ class MigrationTest extends TestCase
 
         $this->assertNull($migration->up());
     }
+
+    public function testWithoutUp(): void
+    {
+        $this->expectException(Exception::class);
+
+        $this->migration->up();
+    }
 }
