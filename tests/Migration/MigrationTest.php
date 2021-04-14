@@ -46,16 +46,28 @@ class MigrationTest extends TestCase
 
     public function testWithAssertCallable(): void
     {
-        $migration = $this->migration->withAssert([new Operator(), 'noop']);
+        $operator = $this->createMock(OperatorInterface::class);
 
-        $this->assertInstanceOf(Closure::class, $migration->getAssert());
+        $operator->expects($this->once())
+            ->method('assert')
+            ->will($this->returnValue(true));
+
+        $migration = $this->migration->withAssert([$operator, 'assert']);
+
+        $this->assertTrue($migration->assert());
     }
 
     public function testWithAssertInvokable(): void
     {
-        $migration = $this->migration->withAssert(new Operator());
+        $operator = $this->createMock(OperatorInterface::class);
 
-        $this->assertInstanceOf(Closure::class, $migration->getAssert());
+        $operator->expects($this->once())
+            ->method('__invoke')
+            ->will($this->returnValue(true));
+
+        $migration = $this->migration->withAssert($operator);
+
+        $this->assertTrue($migration->assert());
     }
 
     public function testWithoutAssert(): void

@@ -69,7 +69,7 @@ class Migration implements MigrationInterface
             throw new Exception();
         }
 
-        return $this->status;
+        return ($this->assertOperator)();
     }
 
     /**
