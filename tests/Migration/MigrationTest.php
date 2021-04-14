@@ -86,9 +86,14 @@ class MigrationTest extends TestCase
 
     public function testWithUpCallable(): void
     {
-        $migration = $this->migration->withUp([new Operator(), 'noop']);
+        $operator = $this->createMock(OperatorInterface::class);
 
-        $this->assertInstanceOf(Closure::class, $migration->getUp());
+        $operator->expects($this->once())
+            ->method('up');
+
+        $migration = $this->migration->withUp([$operator, 'up']);
+
+        $this->assertNull($migration->up());
     }
 
     public function testWithUpInvokable(): void

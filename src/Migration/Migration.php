@@ -77,7 +77,7 @@ class Migration implements MigrationInterface
 
     public function up(): void
     {
-        $this->status = true;
+        ($this->upOperator)();
     }
 
     public function down(): void
