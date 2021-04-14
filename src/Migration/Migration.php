@@ -47,6 +47,10 @@ class Migration implements MigrationInterface
 
     public function assert(): bool
     {
+        if (! $this->assertOperator) {
+            throw new Exception();
+        }
+
         return $this->status;
     }
 
