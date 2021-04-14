@@ -1,6 +1,6 @@
 # griffin
 
-Griffin is a Graph-Oriented Migration Framework for PHP
+**WORK IN PROGRESS** Griffin is a Graph-Oriented Migration Framework for PHP
 
 ## Example
 
