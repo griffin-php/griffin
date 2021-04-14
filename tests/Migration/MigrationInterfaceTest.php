@@ -29,6 +29,15 @@ class MigrationInterfaceTest extends TestCase
         $this->assertEquals('string', (string) $method->getReturnType());
     }
 
+    public function testDependencies(): void
+    {
+        $method = $this->reflection->getMethod('getDependencies');
+
+        $this->assertTrue($method->isPublic());
+        $this->assertEquals(0, $method->getNumberOfParameters());
+        $this->assertEquals('array', (string) $method->getReturnType());
+    }
+
     public function testAssert(): void
     {
         $method = $this->reflection->getMethod('assert');
@@ -54,14 +63,5 @@ class MigrationInterfaceTest extends TestCase
         $this->assertTrue($method->isPublic());
         $this->assertEquals(0, $method->getNumberOfParameters());
         $this->assertEquals('void', (string) $method->getReturnType());
-    }
-
-    public function testDepends(): void
-    {
-        $method = $this->reflection->getMethod('depends');
-
-        $this->assertTrue($method->isPublic());
-        $this->assertEquals(0, $method->getNumberOfParameters());
-        $this->assertEquals('array', (string) $method->getReturnType());
     }
 }

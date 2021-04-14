@@ -9,6 +9,11 @@ interface MigrationInterface
     public function getName(): string;
 
     /**
+     * @return string[]
+     */
+    public function getDependencies(): array;
+
+    /**
      * @SuppressWarnings(PHPMD.ShortMethodName)
      */
     public function up(): void;
@@ -16,9 +21,4 @@ interface MigrationInterface
     public function down(): void;
 
     public function assert(): bool;
-
-    /**
-     * @return string[]
-     */
-    public function depends(): array;
 }

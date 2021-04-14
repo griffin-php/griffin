@@ -35,6 +35,14 @@ class Migration implements MigrationInterface
         return $this->name ?? self::class;
     }
 
+    /**
+     * @return string[]
+     */
+    public function getDependencies(): array
+    {
+        return [];
+    }
+
     public function withAssert(callable $operator): self
     {
         $migration = clone($this);
@@ -82,13 +90,5 @@ class Migration implements MigrationInterface
     public function down(): void
     {
         $this->status = false;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function depends(): array
-    {
-        return [];
     }
 }
