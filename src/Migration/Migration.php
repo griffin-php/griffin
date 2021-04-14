@@ -57,6 +57,24 @@ class Migration implements MigrationInterface
         return ($this->assertOperator)();
     }
 
+    public function withUp(callable $up): self
+    {
+        $migration = clone($this);
+
+        if (! $up instanceof Closure) {
+            $up = Closure::fromCallable($up);
+        }
+
+        $migration->up = $up;
+
+        return $migration;
+    }
+
+    public function getUp(): ?callable
+    {
+        return $this->up;
+    }
+
     public function up(): void
     {
         $this->status = true;
@@ -73,23 +91,5 @@ class Migration implements MigrationInterface
     public function depends(): array
     {
         return [];
-    }
-
-    public function getUp(): ?callable
-    {
-        return $this->up;
-    }
-
-    public function withUp(callable $up): self
-    {
-        $migration = clone($this);
-
-        if (! $up instanceof Closure) {
-            $up = Closure::fromCallable($up);
-        }
-
-        $migration->up = $up;
-
-        return $migration;
     }
 }
