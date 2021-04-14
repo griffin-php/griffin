@@ -16,6 +16,19 @@ class Item implements MigrationInterface
         private Driver $driver,
     ) {}
 
+    public function getDependencies(): array
+    {
+        return [
+            Order::class,
+            Product::class,
+        ];
+    }
+
+    public function assert(): bool
+    {
+        return $this->driver->hasTable('items');
+    }
+
     public function up(): void
     {
         $this->driver->createTable('items');
@@ -24,19 +37,6 @@ class Item implements MigrationInterface
     public function down(): void
     {
         $this->driver->dropTable('items');
-    }
-
-    public function assert(): bool
-    {
-        return $this->driver->hasTable('items');
-    }
-
-    public function depends(): array
-    {
-        return [
-            Order::class,
-            Product::class,
-        ];
     }
 }
 ```
@@ -49,10 +49,10 @@ $driver = new Driver();
 
 $migration = (new Migration())
     ->withName('items')
-    ->withUp(fn() => $driver->createTable('items'))
-    ->withDown(fn() => $driver->dropTable('items'))
+    ->withDependencies(['orders', 'products'])
     ->withAssert(fn() => $driver->hasTable('items'))
-    ->withDepends(['orders', 'products']);
+    ->withUp(fn() => $driver->createTable('items'))
+    ->withDown(fn() => $driver->dropTable('items'));
 
 $griffin->add($migration);
 ```
