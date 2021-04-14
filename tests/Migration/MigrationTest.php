@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace GriffinTest\Migration;
 
-use Closure;
 use Griffin\Migration\Exception;
 use Griffin\Migration\Migration;
 use Griffin\Migration\MigrationInterface;
@@ -98,8 +97,13 @@ class MigrationTest extends TestCase
 
     public function testWithUpInvokable(): void
     {
-        $migration = $this->migration->withUp(new Operator());
+        $operator = $this->createMock(OperatorInterface::class);
 
-        $this->assertInstanceOf(Closure::class, $migration->getUp());
+        $operator->expects($this->once())
+            ->method('__invoke');
+
+        $migration = $this->migration->withUp($operator);
+
+        $this->assertNull($migration->up());
     }
 }
