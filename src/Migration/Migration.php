@@ -70,11 +70,6 @@ class Migration implements MigrationInterface
         return $migration;
     }
 
-    public function getUp(): ?callable
-    {
-        return $this->upOperator;
-    }
-
     public function up(): void
     {
         ($this->upOperator)();

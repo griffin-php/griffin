@@ -79,8 +79,6 @@ class MigrationTest extends TestCase
         $migration = $this->migration->withUp($noop);
 
         $this->assertNotSame($this->migration, $migration);
-        $this->assertNull($this->migration->getUp());
-        $this->assertSame($noop, $migration->getUp());
     }
 
     public function testWithUpCallable(): void
