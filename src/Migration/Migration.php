@@ -17,9 +17,9 @@ class Migration implements MigrationInterface
 
     protected bool $status = false;
 
-    protected ?Closure $assertOperator = null;
+    protected ?Closure $assert = null;
 
-    protected ?Closure $upOperator = null;
+    protected ?Closure $up = null;
 
     public function withName(string $name): self
     {
@@ -43,18 +43,18 @@ class Migration implements MigrationInterface
             $operator = Closure::fromCallable($operator);
         }
 
-        $migration->assertOperator = $operator;
+        $migration->assert = $operator;
 
         return $migration;
     }
 
     public function assert(): bool
     {
-        if (! $this->assertOperator) {
+        if (! $this->assert) {
             throw new Exception();
         }
 
-        return ($this->assertOperator)();
+        return ($this->assert)();
     }
 
     public function withUp(callable $operator): self
@@ -65,18 +65,18 @@ class Migration implements MigrationInterface
             $operator = Closure::fromCallable($operator);
         }
 
-        $migration->upOperator = $operator;
+        $migration->up = $operator;
 
         return $migration;
     }
 
     public function up(): void
     {
-        if (! $this->upOperator) {
+        if (! $this->up) {
             throw new Exception();
         }
 
-        ($this->upOperator)();
+        ($this->up)();
     }
 
     public function down(): void
