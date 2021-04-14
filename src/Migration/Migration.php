@@ -48,6 +48,15 @@ class Migration implements MigrationInterface
         return $migration;
     }
 
+    public function assert(): bool
+    {
+        if (! $this->assertOperator) {
+            throw new Exception();
+        }
+
+        return ($this->assertOperator)();
+    }
+
     public function up(): void
     {
         $this->status = true;
@@ -56,15 +65,6 @@ class Migration implements MigrationInterface
     public function down(): void
     {
         $this->status = false;
-    }
-
-    public function assert(): bool
-    {
-        if (! $this->assertOperator) {
-            throw new Exception();
-        }
-
-        return ($this->assertOperator)();
     }
 
     /**
