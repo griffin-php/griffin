@@ -19,7 +19,7 @@ class Migration implements MigrationInterface
 
     protected ?Closure $assertOperator = null;
 
-    protected ?Closure $up = null;
+    protected ?Closure $upOperator = null;
 
     public function withName(string $name): self
     {
@@ -57,22 +57,22 @@ class Migration implements MigrationInterface
         return ($this->assertOperator)();
     }
 
-    public function withUp(callable $up): self
+    public function withUp(callable $operator): self
     {
         $migration = clone($this);
 
-        if (! $up instanceof Closure) {
-            $up = Closure::fromCallable($up);
+        if (! $operator instanceof Closure) {
+            $operator = Closure::fromCallable($operator);
         }
 
-        $migration->up = $up;
+        $migration->upOperator = $operator;
 
         return $migration;
     }
 
     public function getUp(): ?callable
     {
-        return $this->up;
+        return $this->upOperator;
     }
 
     public function up(): void
