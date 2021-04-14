@@ -9,11 +9,7 @@ namespace GriffinTest\Migration;
  */
 interface OperatorInterface
 {
-    public function up(): void;
-
-    public function down(): void;
-
-    public function assert(): bool;
+    public function operate(): mixed;
 
     public function __invoke(): mixed;
 }

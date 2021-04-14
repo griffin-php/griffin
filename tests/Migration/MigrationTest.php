@@ -44,10 +44,10 @@ class MigrationTest extends TestCase
         $operator = $this->createMock(OperatorInterface::class);
 
         $operator->expects($this->once())
-            ->method('assert')
+            ->method('operate')
             ->will($this->returnValue(true));
 
-        $migration = $this->migration->withAssert([$operator, 'assert']);
+        $migration = $this->migration->withAssert([$operator, 'operate']);
 
         $this->assertTrue($migration->assert());
     }
@@ -84,9 +84,9 @@ class MigrationTest extends TestCase
         $operator = $this->createMock(OperatorInterface::class);
 
         $operator->expects($this->once())
-            ->method('up');
+            ->method('operate');
 
-        $this->migration->withUp([$operator, 'up'])->up();
+        $this->migration->withUp([$operator, 'operate'])->up();
     }
 
     public function testWithUpInvokable(): void
