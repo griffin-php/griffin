@@ -49,6 +49,10 @@ class Runner
     protected function run(MigrationInterface $migration): void
     {
         foreach ($migration->getDependencies() as $dependency) {
+            if (! isset($this->migrations[$dependency])) {
+                throw new Exception();
+            }
+
             $this->run($this->migrations[$dependency]);
         }
 

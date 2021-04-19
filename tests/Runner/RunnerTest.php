@@ -176,4 +176,21 @@ class RunnerTest extends TestCase
         $this->assertContains('C', $container->result);
         $this->assertContains('D', $container->result);
     }
+
+    public function testUpWithMigrationWithUnknownDependency(): void
+    {
+        $this->expectException(Exception::class);
+
+        $migration = $this->createMock(MigrationInterface::class);
+
+        $migration->method('getName')
+            ->will($this->returnValue('A'));
+
+        $migration->method('getDependencies')
+            ->will($this->returnValue(['B'])); // Unknown B
+
+        $this->runner
+            ->addMigration($migration)
+            ->up();
+    }
 }
