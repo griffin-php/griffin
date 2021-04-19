@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace GriffinTest\Runner;
 
+use Griffin\Migration\MigrationInterface;
 use Griffin\Runner\Runner;
 use PHPUnit\Framework\TestCase;
 
@@ -16,8 +17,11 @@ class RunnerTest extends TestCase
 
     public function testMigrations(): void
     {
-        $migrations = $this->runner->getMigrations();
+        $this->assertSame([], $this->runner->getMigrations());
 
-        $this->assertSame([], $migrations);
+        $migration = $this->createMock(MigrationInterface::class);
+
+        $this->assertSame($this->runner, $this->runner->addMigration($migration));
+        $this->assertSame([$migration], $this->runner->getMigrations());
     }
 }
