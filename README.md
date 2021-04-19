@@ -56,3 +56,16 @@ $migration = (new Migration())
 
 $griffin->add($migration);
 ```
+
+```php
+use Database\Migration\Table as TableMigration;
+use Griffin\Runner\Runner;
+
+$runner = (new Runner())
+    ->addMigration(new TableMigration\Item())
+    ->addMigration(new TableMigration\Order())
+    ->addMigration(new TableMigration\Product());
+
+$runner->up(); // creates everything
+$runner->down(); // destroys everthing
+```
