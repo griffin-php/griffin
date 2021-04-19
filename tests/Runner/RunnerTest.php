@@ -33,4 +33,23 @@ class RunnerTest extends TestCase
 
         $this->assertSame([$migration, $otherMigration, $anotherMigration], $this->runner->getMigrations());
     }
+
+    public function testUp(): void
+    {
+        $this->assertSame($this->runner, $this->runner->up());
+    }
+
+    public function testUpWithMigration(): void
+    {
+        $migration = $this->createMock(MigrationInterface::class);
+
+        $migration->expects($this->once())
+            ->method('assert')
+            ->will($this->returnValue(false));
+
+        $migration->expects($this->once())
+            ->method('up');
+
+        $this->runner->addMigration($migration)->up();
+    }
 }

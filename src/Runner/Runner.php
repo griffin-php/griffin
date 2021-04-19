@@ -27,4 +27,18 @@ class Runner
 
         return $this;
     }
+
+    /**
+     * @SuppressWarnings(PHPMD.ShortMethodName)
+     */
+    public function up(): self
+    {
+        foreach ($this->migrations as $migration) {
+            if (! $migration->assert()) {
+                $migration->up();
+            }
+        }
+
+        return $this;
+    }
 }
