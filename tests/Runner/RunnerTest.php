@@ -213,4 +213,19 @@ class RunnerTest extends TestCase
             ->addMigration($migration)
             ->up();
     }
+
+    public function testUpWithDeepCircularDependencies(): void
+    {
+        $this->expectException(Exception::class);
+
+        $migrationA = $this->createMigration('A', ['B']);
+        $migrationB = $this->createMigration('B', ['C']);
+        $migrationC = $this->createMigration('C', ['A']);
+
+        $this->runner
+            ->addMigration($migrationA)
+            ->addMigration($migrationB)
+            ->addMigration($migrationC)
+            ->up();
+    }
 }
