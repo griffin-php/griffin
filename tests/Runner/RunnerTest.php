@@ -84,7 +84,7 @@ class RunnerTest extends TestCase
     /**
      * @param string[] $dependencies
      */
-    protected function buildMigration(StdClass $container, string $name, array $dependencies = []): MigrationInterface
+    protected function createMigration(StdClass $container, string $name, array $dependencies = []): MigrationInterface
     {
         $migration = $this->createMock(MigrationInterface::class);
 
@@ -112,8 +112,8 @@ class RunnerTest extends TestCase
         // Container Logger
         $container->result = [];
 
-        $migrationA = $this->buildMigration($container, 'A', ['B']);
-        $migrationB = $this->buildMigration($container, 'B');
+        $migrationA = $this->createMigration($container, 'A', ['B']);
+        $migrationB = $this->createMigration($container, 'B');
 
         $this->runner
             ->addMigration($migrationA)
@@ -130,10 +130,10 @@ class RunnerTest extends TestCase
         // Container Logger
         $container->result = [];
 
-        $migrationA = $this->buildMigration($container, 'A', ['B', 'C', 'D']);
-        $migrationB = $this->buildMigration($container, 'B');
-        $migrationC = $this->buildMigration($container, 'C');
-        $migrationD = $this->buildMigration($container, 'D');
+        $migrationA = $this->createMigration($container, 'A', ['B', 'C', 'D']);
+        $migrationB = $this->createMigration($container, 'B');
+        $migrationC = $this->createMigration($container, 'C');
+        $migrationD = $this->createMigration($container, 'D');
 
         $this->runner
             ->addMigration($migrationA)
@@ -157,10 +157,10 @@ class RunnerTest extends TestCase
         // Container Logger
         $container->result = [];
 
-        $migrationA = $this->buildMigration($container, 'A', ['B']);
-        $migrationB = $this->buildMigration($container, 'B', ['C', 'D']);
-        $migrationC = $this->buildMigration($container, 'C');
-        $migrationD = $this->buildMigration($container, 'D');
+        $migrationA = $this->createMigration($container, 'A', ['B']);
+        $migrationB = $this->createMigration($container, 'B', ['C', 'D']);
+        $migrationC = $this->createMigration($container, 'C');
+        $migrationD = $this->createMigration($container, 'D');
 
         $this->runner
             ->addMigration($migrationA)
