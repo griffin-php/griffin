@@ -74,4 +74,9 @@ class Runner
 
         return $visited;
     }
+
+    public function down(): self
+    {
+        return $this;
+    }
 }
