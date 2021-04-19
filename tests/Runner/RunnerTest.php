@@ -83,8 +83,6 @@ class RunnerTest extends TestCase
 
     public function testUpWithMigrationWithDependency(): void
     {
-        $this->markTestIncomplete();
-
         // Container
         $container = new StdClass();
         // Container Logger
@@ -95,7 +93,7 @@ class RunnerTest extends TestCase
 
         $migrationA->expects($this->atLeast(1))
             ->method('assert')
-            ->will($this->returnValue(false));
+            ->will($this->returnCallback(fn() => in_array('A', $container->result)));
 
         $migrationA->expects($this->once())
             ->method('up')
@@ -109,7 +107,7 @@ class RunnerTest extends TestCase
 
         $migrationB->expects($this->atLeast(1))
             ->method('assert')
-            ->will($this->returnValue(false));
+            ->will($this->returnCallback(fn() => in_array('B', $container->result)));
 
         $migrationB->expects($this->once())
             ->method('up')
