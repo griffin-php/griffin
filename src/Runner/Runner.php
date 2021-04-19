@@ -18,12 +18,18 @@ class Runner
      */
     public function getMigrations(): array
     {
-        return $this->migrations;
+        return array_values($this->migrations);
     }
 
     public function addMigration(MigrationInterface $migration): self
     {
-        $this->migrations[] = $migration;
+        $name = $migration->getName();
+
+        if (isset($this->migrations[$name])) {
+            throw new Exception();
+        }
+
+        $this->migrations[$name] = $migration;
 
         return $this;
     }

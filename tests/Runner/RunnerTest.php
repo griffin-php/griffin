@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace GriffinTest\Runner;
 
 use Griffin\Migration\MigrationInterface;
+use Griffin\Runner\Exception;
 use Griffin\Runner\Runner;
 use PHPUnit\Framework\TestCase;
 use StdClass;
@@ -25,14 +26,40 @@ class RunnerTest extends TestCase
         $this->assertSame($this->runner, $this->runner->addMigration($migration));
         $this->assertSame([$migration], $this->runner->getMigrations());
 
-        $otherMigration   = $this->createMock(MigrationInterface::class);
+        $otherMigration = $this->createMock(MigrationInterface::class);
+
+        $otherMigration->method('getName')
+            ->will($this->returnValue('MIGRATION_OTHER'));
+
         $anotherMigration = $this->createMock(MigrationInterface::class);
+
+        $anotherMigration->method('getName')
+            ->will($this->returnValue('MIGRATION_ANOTHER'));
 
         $this->runner
             ->addMigration($otherMigration)
             ->addMigration($anotherMigration);
 
         $this->assertSame([$migration, $otherMigration, $anotherMigration], $this->runner->getMigrations());
+    }
+
+    public function testMigrationsDuplicated(): void
+    {
+        $this->expectException(Exception::class);
+
+        $migrationOne = $this->createMock(MigrationInterface::class);
+
+        $migrationOne->method('getName')
+            ->will($this->returnValue('MIGRATION'));
+
+        $migrationTwo = $this->createMock(MigrationInterface::class);
+
+        $migrationTwo->method('getName')
+            ->will($this->returnValue('MIGRATION')); // Same Name from $migrationOne
+
+        $this->runner
+            ->addMigration($migrationOne)
+            ->addMigration($migrationTwo); // Duplicated
     }
 
     public function testUp(): void
