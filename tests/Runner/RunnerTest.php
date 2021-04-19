@@ -21,7 +21,7 @@ class RunnerTest extends TestCase
     /**
      * @param string[] $dependencies
      */
-    protected function createMigration(StdClass $container, string $name, array $dependencies = []): MigrationInterface
+    protected function createMigration(string $name, array $dependencies = []): MigrationInterface
     {
         $migration = $this->createMock(MigrationInterface::class);
 
@@ -30,9 +30,6 @@ class RunnerTest extends TestCase
 
         $migration->method('getDependencies')
             ->will($this->returnValue($dependencies));
-
-        $this->assertMigrationAssert($container, $migration);
-        $this->assertMigrationUp($container, $migration);
 
         return $migration;
     }
@@ -122,13 +119,18 @@ class RunnerTest extends TestCase
         // Container Logger
         $container->result = [];
 
-        $migrationA = $this->createMigration($container, 'A', ['B']);
-        $migrationB = $this->createMigration($container, 'B');
+        $migrations = [
+            $this->createMigration('A', ['B']),
+            $this->createMigration('B'),
+        ];
 
-        $this->runner
-            ->addMigration($migrationA)
-            ->addMigration($migrationB)
-            ->up();
+        foreach ($migrations as $migration) {
+            $this->assertMigrationAssert($container, $migration);
+            $this->assertMigrationUp($container, $migration);
+            $this->runner->addMigration($migration);
+        }
+
+        $this->runner->up();
 
         $this->assertSame(['B', 'A'], $container->result);
     }
@@ -140,17 +142,20 @@ class RunnerTest extends TestCase
         // Container Logger
         $container->result = [];
 
-        $migrationA = $this->createMigration($container, 'A', ['B', 'C', 'D']);
-        $migrationB = $this->createMigration($container, 'B');
-        $migrationC = $this->createMigration($container, 'C');
-        $migrationD = $this->createMigration($container, 'D');
+        $migrations = [
+            $this->createMigration('A', ['B', 'C', 'D']),
+            $this->createMigration('B'),
+            $this->createMigration('C'),
+            $this->createMigration('D'),
+        ];
 
-        $this->runner
-            ->addMigration($migrationA)
-            ->addMigration($migrationB)
-            ->addMigration($migrationC)
-            ->addMigration($migrationD)
-            ->up();
+        foreach ($migrations as $migration) {
+            $this->assertMigrationAssert($container, $migration);
+            $this->assertMigrationUp($container, $migration);
+            $this->runner->addMigration($migration);
+        }
+
+        $this->runner->up();
 
         $this->assertSame('A', array_pop($container->result)); // Last Position = A
 
@@ -167,17 +172,20 @@ class RunnerTest extends TestCase
         // Container Logger
         $container->result = [];
 
-        $migrationA = $this->createMigration($container, 'A', ['B']);
-        $migrationB = $this->createMigration($container, 'B', ['C', 'D']);
-        $migrationC = $this->createMigration($container, 'C');
-        $migrationD = $this->createMigration($container, 'D');
+        $migrations = [
+            $this->createMigration('A', ['B']),
+            $this->createMigration('B', ['C', 'D']),
+            $this->createMigration('C'),
+            $this->createMigration('D'),
+        ];
 
-        $this->runner
-            ->addMigration($migrationA)
-            ->addMigration($migrationB)
-            ->addMigration($migrationC)
-            ->addMigration($migrationD)
-            ->up();
+        foreach ($migrations as $migration) {
+            $this->assertMigrationAssert($container, $migration);
+            $this->assertMigrationUp($container, $migration);
+            $this->runner->addMigration($migration);
+        }
+
+        $this->runner->up();
 
         $this->assertSame('A', array_pop($container->result));
         $this->assertSame('B', array_pop($container->result));
