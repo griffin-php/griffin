@@ -34,6 +34,15 @@ class RunnerTest extends TestCase
         return $migration;
     }
 
+    protected function createContainer(): StdClass
+    {
+        $container = new StdClass();
+
+        $container->result = [];
+
+        return $container;
+    }
+
     protected function assertMigrationAssert(StdClass $container, MockObject $migration): void
     {
         $migration->expects($this->atLeast(1))
@@ -86,10 +95,7 @@ class RunnerTest extends TestCase
 
     public function testUpWithMigration(): void
     {
-        // Container
-        $container = new StdClass();
-        // Container Logger
-        $container->result = [];
+        $container = $this->createContainer();
 
         $migration = $this->createMigration('A');
 
@@ -101,10 +107,7 @@ class RunnerTest extends TestCase
 
     public function testUpWithMigrationWithDependency(): void
     {
-        // Container
-        $container = new StdClass();
-        // Container Logger
-        $container->result = [];
+        $container = $this->createContainer();
 
         $migrations = [
             $this->createMigration('A', ['B']),
@@ -124,10 +127,7 @@ class RunnerTest extends TestCase
 
     public function testUpWithMigrationWithMultipleDependencies(): void
     {
-        // Container
-        $container = new StdClass();
-        // Container Logger
-        $container->result = [];
+        $container = $this->createContainer();
 
         $migrations = [
             $this->createMigration('A', ['B', 'C', 'D']),
@@ -154,10 +154,7 @@ class RunnerTest extends TestCase
 
     public function testUpWithMigrationWithDeepDependencies(): void
     {
-        // Container
-        $container = new StdClass();
-        // Container Logger
-        $container->result = [];
+        $container = $this->createContainer();
 
         $migrations = [
             $this->createMigration('A', ['B']),
