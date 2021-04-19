@@ -17,6 +17,30 @@ class RunnerTest extends TestCase
         $this->runner = new Runner();
     }
 
+    /**
+     * @param string[] $dependencies
+     */
+    protected function createMigration(StdClass $container, string $name, array $dependencies = []): MigrationInterface
+    {
+        $migration = $this->createMock(MigrationInterface::class);
+
+        $migration->method('getName')
+            ->will($this->returnValue($name));
+
+        $migration->method('getDependencies')
+            ->will($this->returnValue($dependencies));
+
+        $migration->expects($this->atLeast(1))
+            ->method('assert')
+            ->will($this->returnCallback(fn() => array_search($name, $container->result) !== false));
+
+        $migration->expects($this->once())
+            ->method('up')
+            ->will($this->returnCallback(fn() => array_push($container->result, $name)));
+
+        return $migration;
+    }
+
     public function testMigrations(): void
     {
         $this->assertSame([], $this->runner->getMigrations());
@@ -79,30 +103,6 @@ class RunnerTest extends TestCase
             ->method('up');
 
         $this->runner->addMigration($migration)->up();
-    }
-
-    /**
-     * @param string[] $dependencies
-     */
-    protected function createMigration(StdClass $container, string $name, array $dependencies = []): MigrationInterface
-    {
-        $migration = $this->createMock(MigrationInterface::class);
-
-        $migration->method('getName')
-            ->will($this->returnValue($name));
-
-        $migration->method('getDependencies')
-            ->will($this->returnValue($dependencies));
-
-        $migration->expects($this->atLeast(1))
-            ->method('assert')
-            ->will($this->returnCallback(fn() => array_search($name, $container->result) !== false));
-
-        $migration->expects($this->once())
-            ->method('up')
-            ->will($this->returnCallback(fn() => array_push($container->result, $name)));
-
-        return $migration;
     }
 
     public function testUpWithMigrationWithDependency(): void
