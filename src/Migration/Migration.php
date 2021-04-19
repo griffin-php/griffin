@@ -15,6 +15,11 @@ class Migration implements MigrationInterface
 {
     protected ?string $name;
 
+    /**
+     * @var string[]
+     */
+    protected ?array $dependencies = [];
+
     protected ?Closure $assert = null;
 
     protected ?Closure $up = null;
@@ -36,11 +41,23 @@ class Migration implements MigrationInterface
     }
 
     /**
+     * @param string[] $dependencies
+     */
+    public function withDependencies(array $dependencies): self
+    {
+        $migration = clone($this);
+
+        $migration->dependencies = $dependencies;
+
+        return $migration;
+    }
+
+    /**
      * @return string[]
      */
     public function getDependencies(): array
     {
-        return [];
+        return $this->dependencies;
     }
 
     public function withAssert(callable $operator): self

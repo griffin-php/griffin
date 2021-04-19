@@ -27,4 +27,17 @@ class MigrationTest extends TestCase
         $this->assertSame(Migration::class, $this->migration->getName());
         $this->assertSame('foobar', $migration->getName());
     }
+
+    public function testDependencies(): void
+    {
+        $dependencies = ['foobar', 'bazqux'];
+
+        $migration = $this->migration->withDependencies($dependencies);
+
+        $this->assertNotSame($dependencies, $this->migration->getDependencies());
+        $this->assertNotSame($this->migration, $migration); // Immutability
+
+        $this->assertSame([], $this->migration->getDependencies());
+        $this->assertSame($dependencies, $migration->getDependencies());
+    }
 }
