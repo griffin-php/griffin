@@ -21,6 +21,8 @@ class Migration implements MigrationInterface
 
     protected ?Closure $up = null;
 
+    protected ?Closure $down = null;
+
     public function withName(string $name): self
     {
         $migration = clone($this);
@@ -87,8 +89,25 @@ class Migration implements MigrationInterface
         ($this->up)();
     }
 
+    public function withDown(callable $operator): self
+    {
+        $migration = clone($this);
+
+        if (! $operator instanceof Closure) {
+            $operator = Closure::fromCallable($operator);
+        }
+
+        $migration->down = $operator;
+
+        return $migration;
+    }
+
     public function down(): void
     {
-        $this->status = false;
+        if (! $this->down) {
+            throw new Exception();
+        }
+
+        ($this->down)();
     }
 }
