@@ -52,20 +52,13 @@ class RunnerTest extends TestCase
     {
         $this->assertSame([], $this->runner->getMigrations());
 
-        $migration = $this->createMock(MigrationInterface::class);
+        $migration = $this->createMigration('MIGRATION');
 
         $this->assertSame($this->runner, $this->runner->addMigration($migration));
         $this->assertSame([$migration], $this->runner->getMigrations());
 
-        $otherMigration = $this->createMock(MigrationInterface::class);
-
-        $otherMigration->method('getName')
-            ->will($this->returnValue('MIGRATION_OTHER'));
-
-        $anotherMigration = $this->createMock(MigrationInterface::class);
-
-        $anotherMigration->method('getName')
-            ->will($this->returnValue('MIGRATION_ANOTHER'));
+        $otherMigration   = $this->createMigration('MIGRATION_OTHER');
+        $anotherMigration = $this->createMigration('MIGRATION_ANOTHER');
 
         $this->runner
             ->addMigration($otherMigration)
@@ -78,15 +71,8 @@ class RunnerTest extends TestCase
     {
         $this->expectException(Exception::class);
 
-        $migrationOne = $this->createMock(MigrationInterface::class);
-
-        $migrationOne->method('getName')
-            ->will($this->returnValue('MIGRATION'));
-
-        $migrationTwo = $this->createMock(MigrationInterface::class);
-
-        $migrationTwo->method('getName')
-            ->will($this->returnValue('MIGRATION')); // Same Name from $migrationOne
+        $migrationOne = $this->createMigration('MIGRATION');
+        $migrationTwo = $this->createMigration('MIGRATION');
 
         $this->runner
             ->addMigration($migrationOne)
@@ -100,14 +86,15 @@ class RunnerTest extends TestCase
 
     public function testUpWithMigration(): void
     {
-        $migration = $this->createMock(MigrationInterface::class);
+        // Container
+        $container = new StdClass();
+        // Container Logger
+        $container->result = [];
 
-        $migration->expects($this->atLeast(1))
-            ->method('assert')
-            ->will($this->returnValue(false));
+        $migration = $this->createMigration('A');
 
-        $migration->expects($this->once(1))
-            ->method('up');
+        $this->assertMigrationAssert($container, $migration);
+        $this->assertMigrationUp($container, $migration);
 
         $this->runner->addMigration($migration)->up();
     }
@@ -199,13 +186,7 @@ class RunnerTest extends TestCase
     {
         $this->expectException(Exception::class);
 
-        $migration = $this->createMock(MigrationInterface::class);
-
-        $migration->method('getName')
-            ->will($this->returnValue('A'));
-
-        $migration->method('getDependencies')
-            ->will($this->returnValue(['B'])); // Unknown B
+        $migration = $this->createMigration('A', ['B']);
 
         $this->runner
             ->addMigration($migration)
@@ -216,23 +197,8 @@ class RunnerTest extends TestCase
     {
         $this->expectException(Exception::class);
 
-        // Migration A
-        $migrationA = $this->createMock(MigrationInterface::class);
-
-        $migrationA->method('getName')
-            ->will($this->returnValue('A'));
-
-        $migrationA->method('getDependencies')
-            ->will($this->returnValue(['B'])); // Unknown B
-
-        // Migration B
-        $migrationB = $this->createMock(MigrationInterface::class);
-
-        $migrationB->method('getName')
-            ->will($this->returnValue('B'));
-
-        $migrationB->method('getDependencies')
-            ->will($this->returnValue(['A'])); // Unknown B
+        $migrationA = $this->createMigration('A', ['B']);
+        $migrationB = $this->createMigration('B', ['A']);
 
         $this->runner
             ->addMigration($migrationA)
@@ -244,13 +210,7 @@ class RunnerTest extends TestCase
     {
         $this->expectException(Exception::class);
 
-        $migration = $this->createMock(MigrationInterface::class);
-
-        $migration->method('getName')
-            ->will($this->returnValue('A'));
-
-        $migration->method('getDependencies')
-            ->will($this->returnValue(['A']));
+        $migration = $this->createMigration('A', ['A']);
 
         $this->runner
             ->addMigration($migration)
