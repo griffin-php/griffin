@@ -40,11 +40,20 @@ class Runner
     public function up(): self
     {
         foreach ($this->migrations as $migration) {
-            if (! $migration->assert()) {
-                $migration->up();
-            }
+            $this->run($migration);
         }
 
         return $this;
+    }
+
+    protected function run(MigrationInterface $migration): void
+    {
+        foreach ($migration->getDependencies() as $dependency) {
+            $this->run($this->migrations[$dependency]);
+        }
+
+        if (! $migration->assert()) {
+            $migration->up();
+        }
     }
 }
