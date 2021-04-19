@@ -112,18 +112,68 @@ class RunnerTest extends TestCase
         // Container Logger
         $container->result = [];
 
-        // Migration A
         $migrationA = $this->buildMigration($container, 'A', ['B']);
-
-        // Migration B
         $migrationB = $this->buildMigration($container, 'B');
 
-        // Running
         $this->runner
             ->addMigration($migrationA)
             ->addMigration($migrationB)
             ->up();
 
         $this->assertSame(['B', 'A'], $container->result);
+    }
+
+    public function testUpWithMigrationWithMultipleDependencies(): void
+    {
+        // Container
+        $container = new StdClass();
+        // Container Logger
+        $container->result = [];
+
+        $migrationA = $this->buildMigration($container, 'A', ['B', 'C', 'D']);
+        $migrationB = $this->buildMigration($container, 'B');
+        $migrationC = $this->buildMigration($container, 'C');
+        $migrationD = $this->buildMigration($container, 'D');
+
+        $this->runner
+            ->addMigration($migrationA)
+            ->addMigration($migrationB)
+            ->addMigration($migrationC)
+            ->addMigration($migrationD)
+            ->up();
+
+        $this->assertSame('A', array_pop($container->result)); // Last Position = A
+
+        // Any Order
+        $this->assertContains('B', $container->result);
+        $this->assertContains('C', $container->result);
+        $this->assertContains('D', $container->result);
+    }
+
+    public function testUpWithMigrationWithDeepDependencies(): void
+    {
+        // Container
+        $container = new StdClass();
+        // Container Logger
+        $container->result = [];
+
+        $migrationA = $this->buildMigration($container, 'A', ['B']);
+        $migrationB = $this->buildMigration($container, 'B', ['C', 'D']);
+        $migrationC = $this->buildMigration($container, 'C');
+        $migrationD = $this->buildMigration($container, 'D');
+
+        $this->runner
+            ->addMigration($migrationA)
+            ->addMigration($migrationB)
+            ->addMigration($migrationC)
+            ->addMigration($migrationD)
+            ->up();
+
+        $this->assertSame('A', array_pop($container->result));
+        $this->assertSame('B', array_pop($container->result));
+
+        // Any Order
+        $this->assertContains('C', $container->result);
+        $this->assertContains('D', $container->result);
     }
 }
