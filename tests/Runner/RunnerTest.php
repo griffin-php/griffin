@@ -193,4 +193,37 @@ class RunnerTest extends TestCase
             ->addMigration($migration)
             ->up();
     }
+
+    public function testUpWithCircularDependencies(): void
+    {
+        $this->expectException(Exception::class);
+
+        // Container
+        $container = new StdClass();
+        // Container Logger
+        $container->result = [];
+
+        // Migration A
+        $migrationA = $this->createMock(MigrationInterface::class);
+
+        $migrationA->method('getName')
+            ->will($this->returnValue('A'));
+
+        $migrationA->method('getDependencies')
+            ->will($this->returnValue(['B'])); // Unknown B
+
+        // Migration B
+        $migrationB = $this->createMock(MigrationInterface::class);
+
+        $migrationB->method('getName')
+            ->will($this->returnValue('B'));
+
+        $migrationB->method('getDependencies')
+            ->will($this->returnValue(['A'])); // Unknown B
+
+        $this->runner
+            ->addMigration($migrationA)
+            ->addMigration($migrationB)
+            ->up();
+    }
 }

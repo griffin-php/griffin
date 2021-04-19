@@ -39,25 +39,39 @@ class Runner
      */
     public function up(): self
     {
+        $visited = [];
+
         foreach ($this->migrations as $migration) {
-            $this->run($migration);
+            $visited = $this->run($visited, $migration);
         }
 
         return $this;
     }
 
-    protected function run(MigrationInterface $migration): void
+    /**
+     * @param string[] $visited
+     * @return string[]
+     */
+    protected function run(array $visited, MigrationInterface $migration): array
     {
+        array_push($visited, $migration->getName());
+
         foreach ($migration->getDependencies() as $dependency) {
+            if (array_search($dependency, $visited) !== false) {
+                throw new Exception(); // Circular Dependency
+            }
+
             if (! isset($this->migrations[$dependency])) {
                 throw new Exception();
             }
 
-            $this->run($this->migrations[$dependency]);
+            $this->run($visited, $this->migrations[$dependency]);
         }
 
         if (! $migration->assert()) {
             $migration->up();
         }
+
+        return $visited;
     }
 }
