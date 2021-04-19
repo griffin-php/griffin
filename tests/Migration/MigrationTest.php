@@ -11,10 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 class MigrationTest extends TestCase
 {
-    public function setUp(): void
-    {
-        $this->migration = new Migration();
-    }
+    use SetUpTrait;
 
     public function testInterface(): void
     {
