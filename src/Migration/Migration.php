@@ -15,8 +15,6 @@ class Migration implements MigrationInterface
 {
     protected ?string $name;
 
-    protected bool $status = false;
-
     protected ?Closure $assert = null;
 
     protected ?Closure $up = null;
