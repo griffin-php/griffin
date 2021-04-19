@@ -54,7 +54,7 @@ $migration = (new Migration())
     ->withUp(fn() => $driver->createTable('items'))
     ->withDown(fn() => $driver->dropTable('items'));
 
-$griffin->add($migration);
+$griffin->addMigration($migration);
 ```
 
 ```php
