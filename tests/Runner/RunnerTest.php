@@ -198,11 +198,6 @@ class RunnerTest extends TestCase
     {
         $this->expectException(Exception::class);
 
-        // Container
-        $container = new StdClass();
-        // Container Logger
-        $container->result = [];
-
         // Migration A
         $migrationA = $this->createMock(MigrationInterface::class);
 
@@ -224,6 +219,23 @@ class RunnerTest extends TestCase
         $this->runner
             ->addMigration($migrationA)
             ->addMigration($migrationB)
+            ->up();
+    }
+
+    public function testUpWithSelfDependency(): void
+    {
+        $this->expectException(Exception::class);
+
+        $migration = $this->createMock(MigrationInterface::class);
+
+        $migration->method('getName')
+            ->will($this->returnValue('A'));
+
+        $migration->method('getDependencies')
+            ->will($this->returnValue(['A']));
+
+        $this->runner
+            ->addMigration($migration)
             ->up();
     }
 }
