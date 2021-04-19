@@ -81,6 +81,30 @@ class RunnerTest extends TestCase
         $this->runner->addMigration($migration)->up();
     }
 
+    /**
+     * @param string[] $dependencies
+     */
+    protected function buildMigration(StdClass $container, string $name, array $dependencies = []): MigrationInterface
+    {
+        $migration = $this->createMock(MigrationInterface::class);
+
+        $migration->method('getName')
+            ->will($this->returnValue($name));
+
+        $migration->method('getDependencies')
+            ->will($this->returnValue($dependencies));
+
+        $migration->expects($this->atLeast(1))
+            ->method('assert')
+            ->will($this->returnCallback(fn() => array_search($name, $container->result) !== false));
+
+        $migration->expects($this->once())
+            ->method('up')
+            ->will($this->returnCallback(fn() => array_push($container->result, $name)));
+
+        return $migration;
+    }
+
     public function testUpWithMigrationWithDependency(): void
     {
         // Container
@@ -89,32 +113,10 @@ class RunnerTest extends TestCase
         $container->result = [];
 
         // Migration A
-        $migrationA = $this->createMock(MigrationInterface::class);
-
-        $migrationA->expects($this->atLeast(1))
-            ->method('assert')
-            ->will($this->returnCallback(fn() => in_array('A', $container->result)));
-
-        $migrationA->expects($this->once())
-            ->method('up')
-            ->will($this->returnCallback(fn() => $container->result[] = 'A'));
-
-        $migrationA->method('getDependencies')
-            ->will($this->returnValue(['MIGRATION_B']));
+        $migrationA = $this->buildMigration($container, 'A', ['B']);
 
         // Migration B
-        $migrationB = $this->createMock(MigrationInterface::class);
-
-        $migrationB->expects($this->atLeast(1))
-            ->method('assert')
-            ->will($this->returnCallback(fn() => in_array('B', $container->result)));
-
-        $migrationB->expects($this->once())
-            ->method('up')
-            ->will($this->returnCallback(fn() => $container->result[] = 'B'));
-
-        $migrationB->method('getName')
-            ->will($this->returnValue('MIGRATION_B'));
+        $migrationB = $this->buildMigration($container, 'B');
 
         // Running
         $this->runner
