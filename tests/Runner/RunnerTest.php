@@ -7,6 +7,7 @@ namespace GriffinTest\Runner;
 use Griffin\Migration\MigrationInterface;
 use Griffin\Runner\Exception;
 use Griffin\Runner\Runner;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use StdClass;
 
@@ -30,15 +31,24 @@ class RunnerTest extends TestCase
         $migration->method('getDependencies')
             ->will($this->returnValue($dependencies));
 
-        $migration->expects($this->atLeast(1))
-            ->method('assert')
-            ->will($this->returnCallback(fn() => array_search($name, $container->result) !== false));
-
-        $migration->expects($this->once())
-            ->method('up')
-            ->will($this->returnCallback(fn() => array_push($container->result, $name)));
+        $this->assertMigrationAssert($container, $migration);
+        $this->assertMigrationUp($container, $migration);
 
         return $migration;
+    }
+
+    protected function assertMigrationAssert(StdClass $container, MockObject $migration): void
+    {
+        $migration->expects($this->atLeast(1))
+            ->method('assert')
+            ->will($this->returnCallback(fn() => array_search($migration->getName(), $container->result) !== false));
+    }
+
+    protected function assertMigrationUp(StdClass $container, MockObject $migration): void
+    {
+        $migration->expects($this->once())
+            ->method('up')
+            ->will($this->returnCallback(fn() => array_push($container->result, $migration->getName())));
     }
 
     public function testMigrations(): void
