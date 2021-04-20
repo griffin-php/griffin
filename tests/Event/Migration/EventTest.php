@@ -10,35 +10,35 @@ use PHPUnit\Framework\TestCase;
 
 class EventTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        $this->migration = $this->createMock(MigrationInterface::class);
-    }
-
     public function testAbstractEvent(): void
     {
-        $event = $this->getMockForAbstractClass(MigrationEvent\AbstractEvent::class, [$this->migration]);
+        $migration = $this->createMock(MigrationInterface::class);
 
-        $this->assertSame($this->migration, $event->getMigration());
+        $event = $this->getMockForAbstractClass(MigrationEvent\AbstractEvent::class, [$migration]);
+
+        $this->assertSame($migration, $event->getMigration());
     }
 
-    public function testDownAfter(): void
+    /**
+     * @return Griffin\Event\Migration\AbstractEvent[]
+     */
+    public function migrationProvider(): array
     {
-        $this->assertInstanceOf(MigrationEvent\AbstractEvent::class, new MigrationEvent\DownAfter($this->migration));
+        $migration = $this->createMock(MigrationInterface::class);
+
+        return [
+            [$migration, new MigrationEvent\DownAfter($migration)],
+            [$migration, new MigrationEvent\DownBefore($migration)],
+            [$migration, new MigrationEvent\UpAfter($migration)],
+            [$migration, new MigrationEvent\UpBefore($migration)],
+        ];
     }
 
-    public function testDownBefore(): void
+    /**
+     * @dataProvider migrationProvider
+     */
+    public function testEvent(MigrationInterface $migration, MigrationEvent\AbstractEvent $event): void
     {
-        $this->assertInstanceOf(MigrationEvent\AbstractEvent::class, new MigrationEvent\DownBefore($this->migration));
-    }
-
-    public function testUpAfter(): void
-    {
-        $this->assertInstanceOf(MigrationEvent\AbstractEvent::class, new MigrationEvent\UpAfter($this->migration));
-    }
-
-    public function testUpBefore(): void
-    {
-        $this->assertInstanceOf(MigrationEvent\AbstractEvent::class, new MigrationEvent\UpBefore($this->migration));
+        $this->assertSame($migration, $event->getMigration());
     }
 }
