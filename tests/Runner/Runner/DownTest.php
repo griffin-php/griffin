@@ -133,4 +133,15 @@ class DownTest extends TestCase
             ->addMigration($migrationB)
             ->down();
     }
+
+    public function testDownWithSelfDependency(): void
+    {
+        $this->expectException(Exception::class);
+
+        $migration = $this->createMigration('A', ['A']);
+
+        $this->runner
+            ->addMigration($migration)
+            ->down();
+    }
 }
