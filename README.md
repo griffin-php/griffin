@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/griffin-php/griffin/main/icon.svg" width="200">
+</p>
+
 # griffin
 
 **WORK IN PROGRESS** Griffin is a Graph-Oriented Migration Framework for PHP
@@ -96,3 +100,11 @@ $runner->up();
 // Griffin\Event\Migration\UpBefore::Database\Migration\Table\Item
 // Griffin\Event\Migration\UpAfter::Database\Migration\Table\Item
 ```
+
+## License
+
+This package is opensource and available under MIT license described in
+[LICENSE](https://github.com/griffin-php/griffin/blob/main/LICENSE).
+
+Icons made by [Freepik](https://www.freepik.com) from
+[Flaticon](https://www.flaticon.com).
