@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Griffin\Runner;
 
+use Griffin\Event\Migration\UpAfter;
 use Griffin\Event\Migration\UpBefore;
 use Griffin\Migration\MigrationInterface;
 use League\Event\EventDispatcher;
@@ -78,8 +79,13 @@ class Runner
         }
 
         if (! $migration->assert()) {
-            $this->getEventDispatcher()->dispatch(new UpBefore($migration));
+            $eventDispatcher = $this->getEventDispatcher();
+
+            $eventDispatcher->dispatch(new UpBefore($migration));
+
             $migration->up();
+
+            $eventDispatcher->dispatch(new UpAfter($migration));
         }
 
         return $visited;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace GriffinTest\Runner\Runner;
 
+use Griffin\Event\Migration\UpAfter;
 use Griffin\Event\Migration\UpBefore;
 use Griffin\Runner\Exception;
 use Griffin\Runner\Runner;
@@ -165,10 +166,14 @@ class UpTest extends TestCase
     {
         $helper = new StdClass();
 
-        $helper->status = false;
+        $helper->before = false;
+        $helper->after  = false;
 
         $this->runner->getEventDispatcher()
-            ->subscribeTo(UpBefore::class, fn() => $helper->status = true);
+            ->subscribeTo(UpBefore::class, fn() => $helper->before = true);
+
+        $this->runner->getEventDispatcher()
+            ->subscribeTo(UpAfter::class, fn() => $helper->after = true);
 
         $migration = $this->createMigration('MIGRATION');
 
@@ -176,6 +181,7 @@ class UpTest extends TestCase
             ->addMigration($migration)
             ->up();
 
-        $this->assertTrue($helper->status);
+        $this->assertTrue($helper->before);
+        $this->assertTrue($helper->after);
     }
 }
