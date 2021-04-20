@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace GriffinTest\Runner\Runner;
 
+use Griffin\Runner\Exception;
 use Griffin\Runner\Runner;
 use GriffinTest\Runner\MigrationTrait;
 use PHPUnit\Framework\TestCase;
@@ -107,5 +108,16 @@ class DownTest extends TestCase
         // Any Order
         $this->assertContains('C', $container->down);
         $this->assertContains('D', $container->down);
+    }
+
+    public function testDownWithMigrationWithUnknownDependency(): void
+    {
+        $this->expectException(Exception::class);
+
+        $migration = $this->createMigration('A', ['B']);
+
+        $this->runner
+            ->addMigration($migration)
+            ->down();
     }
 }

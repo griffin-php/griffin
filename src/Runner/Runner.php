@@ -113,6 +113,19 @@ class Runner
         ));
     }
 
+    protected function check(): void
+    {
+        $dependencies = array_values(array_map(fn($migration) => $migration->getDependencies(), $this->migrations));
+        $migrations   = array_keys($this->migrations);
+        $everything   = array_merge($migrations, ...$dependencies);
+
+        $unknown = array_diff($everything, $migrations);
+
+        if ($unknown) {
+            throw new Exception();
+        }
+    }
+
     protected function migrationDown(MigrationInterface $migration): void
     {
         foreach ($this->getDependents($migration) as $dependent) {
@@ -126,6 +139,8 @@ class Runner
 
     public function down(): self
     {
+        $this->check();
+
         foreach ($this->migrations as $migration) {
             $this->migrationDown($migration);
         }
