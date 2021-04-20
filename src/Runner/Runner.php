@@ -102,9 +102,28 @@ class Runner
         return $visited;
     }
 
+    /**
+     * @return Griffin\Migration\Migration[]
+     */
+    protected function getDependents(MigrationInterface $migration): array
+    {
+        return array_filter(
+            $this->migrations,
+            fn($current) => array_search($migration->getName(), $current->getDependencies()) !== false
+        );
+    }
+
     public function down(): self
     {
         foreach ($this->migrations as $migration) {
+            $dependents = $this->getDependents($migration);
+
+            foreach ($dependents as $dependent) {
+                if ($dependent->assert()) {
+                    $dependent->down();
+                }
+            }
+
             if ($migration->assert()) {
                 $migration->down();
             }
