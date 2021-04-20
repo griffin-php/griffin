@@ -144,4 +144,19 @@ class DownTest extends TestCase
             ->addMigration($migration)
             ->down();
     }
+
+    public function testDownWithDeepCircularDependencies(): void
+    {
+        $this->expectException(Exception::class);
+
+        $migrationA = $this->createMigration('A', ['B']);
+        $migrationB = $this->createMigration('B', ['C']);
+        $migrationC = $this->createMigration('C', ['A']);
+
+        $this->runner
+            ->addMigration($migrationA)
+            ->addMigration($migrationB)
+            ->addMigration($migrationC)
+            ->down();
+    }
 }
