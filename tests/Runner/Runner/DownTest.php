@@ -39,8 +39,8 @@ class DownTest extends TestCase
         $container = $this->createContainer(['A', 'B']);
 
         $migrations = [
-            $this->createMigration('A', ['B']),
             $this->createMigration('B'),
+            $this->createMigration('A', ['B']),
         ];
 
         foreach ($migrations as $migration) {
@@ -51,6 +51,7 @@ class DownTest extends TestCase
 
         $this->runner->down();
 
-        $this->assertSame([], $container->up);
+        $this->assertSame([], $container->status);
+        $this->assertSame(['A', 'B'], $container->down); // Must Respect Order
     }
 }
