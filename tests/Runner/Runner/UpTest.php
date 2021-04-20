@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace GriffinTest\Runner\Runner;
 
-use Griffin\Event\Migration\Up;
+use Griffin\Event\Migration\UpBefore;
 use Griffin\Runner\Exception;
 use Griffin\Runner\Runner;
 use GriffinTest\Runner\MigrationTrait;
@@ -168,7 +168,7 @@ class UpTest extends TestCase
         $helper->status = false;
 
         $this->runner->getEventDispatcher()
-            ->subscribeTo(Up::class, fn() => $helper->status = true);
+            ->subscribeTo(UpBefore::class, fn() => $helper->status = true);
 
         $migration = $this->createMigration('MIGRATION');
 

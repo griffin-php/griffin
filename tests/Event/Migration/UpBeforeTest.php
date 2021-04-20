@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace GriffinTest\Event\Migration;
 
-use Griffin\Event\Migration\Up;
+use Griffin\Event\Migration\UpBefore;
 use Griffin\Migration\MigrationInterface;
 use PHPUnit\Framework\TestCase;
 
-class UpTest extends TestCase
+class UpBeforeTest extends TestCase
 {
     protected function setUp(): void
     {
         $this->migration = $this->createMock(MigrationInterface::class);
 
-        $this->event = new Up($this->migration);
+        $this->event = new UpBefore($this->migration);
     }
 
     public function testMigration(): void

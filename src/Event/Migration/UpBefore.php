@@ -6,10 +6,7 @@ namespace Griffin\Event\Migration;
 
 use Griffin\Migration\MigrationInterface;
 
-/**
- * @SuppressWarnings(PHPMD.ShortClassName)
- */
-class Up
+class UpBefore
 {
     protected MigrationInterface $migration;
 
