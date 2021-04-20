@@ -26,11 +26,17 @@ trait MigrationTrait
         return $migration;
     }
 
-    protected function createContainer(): StdClass
+    /**
+     * @param string[] $status
+     */
+    protected function createContainer(array $status = []): StdClass
     {
         $container = new StdClass();
 
-        $container->up = [];
+        $container->up   = []; // up called
+        $container->down = []; // down called
+
+        $container->status = $status; // current status
 
         return $container;
     }
@@ -39,12 +45,15 @@ trait MigrationTrait
     {
         $migration->expects($this->atLeast(1))
             ->method('assert')
-            ->will($this->returnCallback(fn() => array_search($migration->getName(), $container->up) !== false));
+            ->will($this->returnCallback(fn() => array_search($migration->getName(), $container->status) !== false));
     }
 
     protected function assertMigrationUp(StdClass $container, MockObject $migration): void
     {
-        $callback = fn() => $container->up = array_merge($container->up, [$migration->getName()]);
+        $callback = function () use ($container, $migration): void {
+            $container->status = array_merge($container->status, [$migration->getName()]);
+            $container->up     = array_merge($container->up, [$migration->getName()]);
+        };
 
         $migration->expects($this->once())
             ->method('up')
@@ -53,7 +62,10 @@ trait MigrationTrait
 
     protected function assertMigrationDown(StdClass $container, MockObject $migration): void
     {
-        $callback = fn () => $container->up = array_diff($container->up, [$migration->getName()]);
+        $callback = function () use ($container, $migration): void {
+            $container->status = array_diff($container->status, [$migration->getName()]);
+            $container->down   = array_merge($container->down, [$migration->getName()]);
+        };
 
         $migration->expects($this->once())
             ->method('down')
