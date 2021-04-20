@@ -26,11 +26,14 @@ trait MigrationTrait
         return $migration;
     }
 
-    protected function createContainer(): StdClass
+    /**
+     * @param string[] $result
+     */
+    protected function createContainer(array $result = []): StdClass
     {
         $container = new StdClass();
 
-        $container->result = [];
+        $container->result = $result;
 
         return $container;
     }
@@ -44,8 +47,19 @@ trait MigrationTrait
 
     protected function assertMigrationUp(StdClass $container, MockObject $migration): void
     {
+        $callback = fn() => $container->result = array_merge($container->result, [$migration->getName()]);
+
         $migration->expects($this->once())
             ->method('up')
-            ->will($this->returnCallback(fn() => array_push($container->result, $migration->getName())));
+            ->will($this->returnCallback($callback));
+    }
+
+    protected function assertMigrationDown(StdClass $container, MockObject $migration): void
+    {
+        $callback = fn () => $container->result = array_diff($container->result, [$migration->getName()]);
+
+        $migration->expects($this->once())
+            ->method('down')
+            ->will($this->returnCallback($callback));
     }
 }

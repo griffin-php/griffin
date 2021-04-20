@@ -77,6 +77,12 @@ class Runner
 
     public function down(): self
     {
+        foreach ($this->migrations as $migration) {
+            if ($migration->assert()) {
+                $migration->down();
+            }
+        }
+
         return $this;
     }
 }
