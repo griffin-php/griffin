@@ -75,19 +75,21 @@ use Database\Migration\Table\Item as ItemTableMigration;
 use Griffin\Event\Migration\UpAfter;
 use Griffin\Event\Migration\UpBefore;
 use Griffin\Runner\Runner;
+use League\Event\EventDispatcher;
 
 $runner = new Runner();
 
 $logger = fn($event)
     => printf("%s::%s\n", get_class($event), get_class($event->getMigration()));
 
-$runner->getEventDispatcher()
-    ->subscribeTo(UpBefore::class, $logger);
+$dispatcher = new EventDispatcher(); // PSR-14
 
-$runner->getEventDispatcher()
-    ->subscribeTo(UpAfter::class, $logger);
+$dispatcher->subscribeTo(UpBefore::class, $logger);
+$dispatcher->subscribeTo(UpAfter::class, $logger);
 
-$runner->addMigration(new ItemTableMigration());
+$runner
+    ->setEventDispatcher($dispatcher)
+    ->addMigration(new ItemTableMigration());
 
 $runner->up();
 
