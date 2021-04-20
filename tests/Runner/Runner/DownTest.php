@@ -81,4 +81,31 @@ class DownTest extends TestCase
         $this->assertContains('C', $container->down);
         $this->assertContains('D', $container->down);
     }
+
+    public function testUpWithMigrationWithDeepDependencies(): void
+    {
+        $container = $this->createContainer(['A', 'B', 'C', 'D']);
+
+        $migrations = [
+            $this->createMigration('D'),
+            $this->createMigration('C'),
+            $this->createMigration('B', ['C', 'D']),
+            $this->createMigration('A', ['B']),
+        ];
+
+        foreach ($migrations as $migration) {
+            $this->assertMigrationAssert($container, $migration);
+            $this->assertMigrationDown($container, $migration);
+            $this->runner->addMigration($migration);
+        }
+
+        $this->runner->down();
+
+        $this->assertSame('A', array_shift($container->down));
+        $this->assertSame('B', array_shift($container->down));
+
+        // Any Order
+        $this->assertContains('C', $container->down);
+        $this->assertContains('D', $container->down);
+    }
 }

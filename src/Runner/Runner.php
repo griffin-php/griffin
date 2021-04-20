@@ -107,26 +107,27 @@ class Runner
      */
     protected function getDependents(MigrationInterface $migration): array
     {
-        return array_filter(
+        return array_keys(array_filter(
             $this->migrations,
             fn($current) => array_search($migration->getName(), $current->getDependencies()) !== false
-        );
+        ));
+    }
+
+    protected function migrationDown(MigrationInterface $migration): void
+    {
+        foreach ($this->getDependents($migration) as $dependent) {
+            $this->migrationDown($this->migrations[$dependent]);
+        }
+
+        if ($migration->assert()) {
+            $migration->down();
+        }
     }
 
     public function down(): self
     {
         foreach ($this->migrations as $migration) {
-            $dependents = $this->getDependents($migration);
-
-            foreach ($dependents as $dependent) {
-                if ($dependent->assert()) {
-                    $dependent->down();
-                }
-            }
-
-            if ($migration->assert()) {
-                $migration->down();
-            }
+            $this->migrationDown($migration);
         }
 
         return $this;
