@@ -26,7 +26,7 @@ class DownTest extends TestCase
     {
         $container = $this->createContainer();
 
-        $container->result = ['A'];
+        $container->up = ['A'];
 
         $migration = $this->createMigration('A');
 
@@ -40,7 +40,7 @@ class DownTest extends TestCase
     {
         $container = $this->createContainer();
 
-        $container->result = ['A', 'B'];
+        $container->up = ['A', 'B'];
 
         $migrations = [
             $this->createMigration('A', ['B']),
@@ -55,6 +55,6 @@ class DownTest extends TestCase
 
         $this->runner->down();
 
-        $this->assertSame([], $container->result);
+        $this->assertSame([], $container->up);
     }
 }

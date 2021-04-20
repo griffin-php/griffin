@@ -55,7 +55,7 @@ class UpTest extends TestCase
 
         $this->runner->up();
 
-        $this->assertSame(['B', 'A'], $container->result);
+        $this->assertSame(['B', 'A'], $container->up);
     }
 
     public function testUpWithMigrationWithMultipleDependencies(): void
@@ -77,12 +77,12 @@ class UpTest extends TestCase
 
         $this->runner->up();
 
-        $this->assertSame('A', array_pop($container->result)); // Last Position = A
+        $this->assertSame('A', array_pop($container->up)); // Last Position = A
 
         // Any Order
-        $this->assertContains('B', $container->result);
-        $this->assertContains('C', $container->result);
-        $this->assertContains('D', $container->result);
+        $this->assertContains('B', $container->up);
+        $this->assertContains('C', $container->up);
+        $this->assertContains('D', $container->up);
     }
 
     public function testUpWithMigrationWithDeepDependencies(): void
@@ -104,12 +104,12 @@ class UpTest extends TestCase
 
         $this->runner->up();
 
-        $this->assertSame('A', array_pop($container->result));
-        $this->assertSame('B', array_pop($container->result));
+        $this->assertSame('A', array_pop($container->up));
+        $this->assertSame('B', array_pop($container->up));
 
         // Any Order
-        $this->assertContains('C', $container->result);
-        $this->assertContains('D', $container->result);
+        $this->assertContains('C', $container->up);
+        $this->assertContains('D', $container->up);
     }
 
     public function testUpWithMigrationWithUnknownDependency(): void

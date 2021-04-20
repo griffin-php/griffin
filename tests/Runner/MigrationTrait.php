@@ -26,14 +26,11 @@ trait MigrationTrait
         return $migration;
     }
 
-    /**
-     * @param string[] $result
-     */
     protected function createContainer(): StdClass
     {
         $container = new StdClass();
 
-        $container->result = [];
+        $container->up = [];
 
         return $container;
     }
@@ -42,12 +39,12 @@ trait MigrationTrait
     {
         $migration->expects($this->atLeast(1))
             ->method('assert')
-            ->will($this->returnCallback(fn() => array_search($migration->getName(), $container->result) !== false));
+            ->will($this->returnCallback(fn() => array_search($migration->getName(), $container->up) !== false));
     }
 
     protected function assertMigrationUp(StdClass $container, MockObject $migration): void
     {
-        $callback = fn() => $container->result = array_merge($container->result, [$migration->getName()]);
+        $callback = fn() => $container->up = array_merge($container->up, [$migration->getName()]);
 
         $migration->expects($this->once())
             ->method('up')
@@ -56,7 +53,7 @@ trait MigrationTrait
 
     protected function assertMigrationDown(StdClass $container, MockObject $migration): void
     {
-        $callback = fn () => $container->result = array_diff($container->result, [$migration->getName()]);
+        $callback = fn () => $container->up = array_diff($container->up, [$migration->getName()]);
 
         $migration->expects($this->once())
             ->method('down')
