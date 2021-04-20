@@ -69,3 +69,28 @@ $runner = (new Runner())
 $runner->up(); // creates everything
 $runner->down(); // destroys everthing
 ```
+
+```php
+use Database\Migration\Table\Item as ItemTableMigration;
+use Griffin\Event\Migration\UpAfter;
+use Griffin\Event\Migration\UpBefore;
+use Griffin\Runner\Runner;
+
+$runner = new Runner();
+
+$logger = fn($event)
+    => printf("%s::%s\n", get_class($event), get_class($event->getMigration()));
+
+$runner->getEventDispatcher()
+    ->subscribeTo(UpBefore::class, $logger);
+
+$runner->getEventDispatcher()
+    ->subscribeTo(UpAfter::class, $logger);
+
+$runner->addMigration(new ItemTableMigration());
+
+$runner->up();
+
+// Griffin\Event\Migration\UpBefore::Database\Migration\Table\Item
+// Griffin\Event\Migration\UpAfter::Database\Migration\Table\Item
+```
