@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace GriffinTest\Runner\Runner;
 
+use Griffin\Event\Migration\Up;
 use Griffin\Runner\Exception;
 use Griffin\Runner\Runner;
 use GriffinTest\Runner\MigrationTrait;
 use PHPUnit\Framework\TestCase;
+use StdClass;
 
 class UpTest extends TestCase
 {
@@ -157,5 +159,23 @@ class UpTest extends TestCase
             ->addMigration($migrationB)
             ->addMigration($migrationC)
             ->up();
+    }
+
+    public function testUpEventDispatcher(): void
+    {
+        $helper = new StdClass();
+
+        $helper->status = false;
+
+        $this->runner->getEventDispatcher()
+            ->subscribeTo(Up::class, fn() => $helper->status = true);
+
+        $migration = $this->createMigration('MIGRATION');
+
+        $this->runner
+            ->addMigration($migration)
+            ->up();
+
+        $this->assertTrue($helper->status);
     }
 }
