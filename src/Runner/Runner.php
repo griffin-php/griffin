@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Griffin\Runner;
 
+use Griffin\Event\Migration\DownAfter;
+use Griffin\Event\Migration\DownBefore;
 use Griffin\Event\Migration\UpAfter;
 use Griffin\Event\Migration\UpBefore;
 use Griffin\Migration\MigrationInterface;
@@ -143,7 +145,17 @@ class Runner
         }
 
         if ($migration->assert()) {
+            $eventDispatcher = $this->getEventDispatcher();
+
+            if ($eventDispatcher) {
+                $eventDispatcher->dispatch(new DownBefore($migration));
+            }
+
             $migration->down();
+
+            if ($eventDispatcher) {
+                $eventDispatcher->dispatch(new DownAfter($migration));
+            }
         }
 
         return $visited;

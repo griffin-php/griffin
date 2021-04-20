@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace GriffinTest\Runner\Runner;
 
+use Griffin\Event\Migration\DownAfter;
+use Griffin\Event\Migration\DownBefore;
 use Griffin\Runner\Exception;
 use Griffin\Runner\Runner;
 use GriffinTest\Runner\MigrationTrait;
+use League\Event\EventDispatcher;
 use PHPUnit\Framework\TestCase;
+use StdClass;
 
 class DownTest extends TestCase
 {
@@ -158,5 +162,33 @@ class DownTest extends TestCase
             ->addMigration($migrationB)
             ->addMigration($migrationC)
             ->down();
+    }
+
+    public function testDownEventDispatcher(): void
+    {
+        $helper = new StdClass();
+
+        $helper->before = false;
+        $helper->after  = false;
+
+        $dispatcher = new EventDispatcher();
+
+        $dispatcher->subscribeTo(DownBefore::class, fn() => $helper->before = true);
+        $dispatcher->subscribeTo(DownAfter::class, fn() => $helper->after = true);
+
+        $container = $this->createContainer(['MIGRATION']);
+
+        $migration = $this->createMigration('MIGRATION');
+
+        $this->assertMigrationAssert($container, $migration);
+        $this->assertMigrationDown($container, $migration);
+
+        $this->runner
+            ->setEventDispatcher($dispatcher)
+            ->addMigration($migration)
+            ->down();
+
+        $this->assertTrue($helper->before);
+        $this->assertTrue($helper->after);
     }
 }
