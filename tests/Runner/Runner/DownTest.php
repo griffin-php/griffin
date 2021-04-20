@@ -36,6 +36,8 @@ class DownTest extends TestCase
 
     public function testDownWithMigrationWithDependency(): void
     {
+        $this->markTestIncomplete();
+
         $container = $this->createContainer(['A', 'B']);
 
         $migrations = [
