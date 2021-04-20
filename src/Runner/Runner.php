@@ -7,20 +7,27 @@ namespace Griffin\Runner;
 use Griffin\Event\Migration\UpAfter;
 use Griffin\Event\Migration\UpBefore;
 use Griffin\Migration\MigrationInterface;
-use League\Event\EventDispatcher;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Runner
 {
-    protected ?EventDispatcher $eventDispatcher = null;
+    protected ?EventDispatcherInterface $eventDispatcher = null;
 
     /**
      * @var Griffin\Migration\Migration[]
      */
     protected array $migrations = [];
 
-    public function getEventDispatcher(): EventDispatcher
+    public function setEventDispatcher(?EventDispatcherInterface $eventDispatcher): self
     {
-        return $this->EventDispatcher ??= new EventDispatcher();
+        $this->eventDispatcher = $eventDispatcher;
+
+        return $this;
+    }
+
+    public function getEventDispatcher(): ?EventDispatcherInterface
+    {
+        return $this->eventDispatcher;
     }
 
     /**
@@ -81,11 +88,15 @@ class Runner
         if (! $migration->assert()) {
             $eventDispatcher = $this->getEventDispatcher();
 
-            $eventDispatcher->dispatch(new UpBefore($migration));
+            if ($eventDispatcher) {
+                $eventDispatcher->dispatch(new UpBefore($migration));
+            }
 
             $migration->up();
 
-            $eventDispatcher->dispatch(new UpAfter($migration));
+            if ($eventDispatcher) {
+                $eventDispatcher->dispatch(new UpAfter($migration));
+            }
         }
 
         return $visited;

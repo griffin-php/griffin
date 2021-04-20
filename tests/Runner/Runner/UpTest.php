@@ -9,6 +9,7 @@ use Griffin\Event\Migration\UpBefore;
 use Griffin\Runner\Exception;
 use Griffin\Runner\Runner;
 use GriffinTest\Runner\MigrationTrait;
+use League\Event\EventDispatcher;
 use PHPUnit\Framework\TestCase;
 use StdClass;
 
@@ -169,15 +170,15 @@ class UpTest extends TestCase
         $helper->before = false;
         $helper->after  = false;
 
-        $this->runner->getEventDispatcher()
-            ->subscribeTo(UpBefore::class, fn() => $helper->before = true);
+        $dispatcher = new EventDispatcher();
 
-        $this->runner->getEventDispatcher()
-            ->subscribeTo(UpAfter::class, fn() => $helper->after = true);
+        $dispatcher->subscribeTo(UpBefore::class, fn() => $helper->before = true);
+        $dispatcher->subscribeTo(UpAfter::class, fn() => $helper->after = true);
 
         $migration = $this->createMigration('MIGRATION');
 
         $this->runner
+            ->setEventDispatcher($dispatcher)
             ->addMigration($migration)
             ->up();
 

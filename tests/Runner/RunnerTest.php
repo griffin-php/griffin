@@ -20,10 +20,13 @@ class RunnerTest extends TestCase
 
     public function testEventDispatcher(): void
     {
-        $dispatcher = $this->runner->getEventDispatcher();
+        $dispatcher = $this->createMock(EventDispatcherInterface::class);
 
-        $this->assertInstanceOf(EventDispatcherInterface::class, $dispatcher);
+        $this->assertNull($this->runner->getEventDispatcher());
+        $this->assertSame($this->runner, $this->runner->setEventDispatcher($dispatcher));
         $this->assertSame($dispatcher, $this->runner->getEventDispatcher());
+        $this->assertSame($this->runner, $this->runner->setEventDispatcher(null));
+        $this->assertNull($this->runner->getEventDispatcher());
     }
 
     public function testMigrations(): void
