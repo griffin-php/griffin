@@ -59,7 +59,7 @@ class Runner
         $visited = [];
 
         foreach ($this->migrations as $migration) {
-            $visited = $this->run($visited, $migration);
+            $visited = $this->migrationUp($visited, $migration);
         }
 
         return $this;
@@ -69,7 +69,7 @@ class Runner
      * @param string[] $visited
      * @return string[]
      */
-    protected function run(array $visited, MigrationInterface $migration): array
+    protected function migrationUp(array $visited, MigrationInterface $migration): array
     {
         array_push($visited, $migration->getName());
 
@@ -82,7 +82,7 @@ class Runner
                 throw new Exception();
             }
 
-            $this->run($visited, $this->migrations[$dependency]);
+            $this->migrationUp($visited, $this->migrations[$dependency]);
         }
 
         if (! $migration->assert()) {
