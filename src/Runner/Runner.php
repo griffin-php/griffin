@@ -5,13 +5,21 @@ declare(strict_types=1);
 namespace Griffin\Runner;
 
 use Griffin\Migration\MigrationInterface;
+use League\Event\EventDispatcher;
 
 class Runner
 {
+    protected ?EventDispatcher $eventDispatcher = null;
+
     /**
      * @var Griffin\Migration\Migration[]
      */
     protected array $migrations = [];
+
+    public function getEventDispatcher(): EventDispatcher
+    {
+        return $this->EventDispatcher ??= new EventDispatcher();
+    }
 
     /**
      * @return Griffin\Migration\Migration[]

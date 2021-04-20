@@ -7,6 +7,7 @@ namespace GriffinTest\Runner;
 use Griffin\Runner\Exception;
 use Griffin\Runner\Runner;
 use PHPUnit\Framework\TestCase;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class RunnerTest extends TestCase
 {
@@ -15,6 +16,14 @@ class RunnerTest extends TestCase
     protected function setUp(): void
     {
         $this->runner = new Runner();
+    }
+
+    public function testEventDispatcher(): void
+    {
+        $dispatcher = $this->runner->getEventDispatcher();
+
+        $this->assertInstanceOf(EventDispatcherInterface::class, $dispatcher);
+        $this->assertSame($dispatcher, $this->runner->getEventDispatcher());
     }
 
     public function testMigrations(): void
