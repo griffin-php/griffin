@@ -29,11 +29,11 @@ trait MigrationTrait
     /**
      * @param string[] $result
      */
-    protected function createContainer(array $result = []): StdClass
+    protected function createContainer(): StdClass
     {
         $container = new StdClass();
 
-        $container->result = $result;
+        $container->result = [];
 
         return $container;
     }

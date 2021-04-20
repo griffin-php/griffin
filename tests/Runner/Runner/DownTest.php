@@ -24,7 +24,9 @@ class DownTest extends TestCase
 
     public function testDownWithMigration(): void
     {
-        $container = $this->createContainer(['A']);
+        $container = $this->createContainer();
+
+        $container->result = ['A'];
 
         $migration = $this->createMigration('A');
 
@@ -32,5 +34,27 @@ class DownTest extends TestCase
         $this->assertMigrationDown($container, $migration);
 
         $this->runner->addMigration($migration)->down();
+    }
+
+    public function testDownWithMigrationWithDependency(): void
+    {
+        $container = $this->createContainer();
+
+        $container->result = ['A', 'B'];
+
+        $migrations = [
+            $this->createMigration('A', ['B']),
+            $this->createMigration('B'),
+        ];
+
+        foreach ($migrations as $migration) {
+            $this->assertMigrationAssert($container, $migration);
+            $this->assertMigrationDown($container, $migration);
+            $this->runner->addMigration($migration);
+        }
+
+        $this->runner->down();
+
+        $this->assertSame([], $container->result);
     }
 }
