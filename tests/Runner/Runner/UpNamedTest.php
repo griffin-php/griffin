@@ -73,4 +73,29 @@ class UpNamedTest extends TestCase
         $this->assertNotContains('E', $container->up);
         $this->assertNotContains('F', $container->up);
     }
+
+    public function testMigrationMultiple(): void
+    {
+        $container = $this->createContainer();
+
+        $migrations = [
+            $this->createMigration('A'),
+            $this->createMigration('B'),
+        ];
+
+        foreach ($migrations as $migration) {
+            $this->assertMigrationAssert($container, $migration);
+            $this->assertMigrationUp($container, $migration);
+            $this->runner->addMigration($migration);
+        }
+
+        $this->runner->addMigration($this->createMigration('C'));
+
+        $this->runner->up('A', 'B');
+
+        $this->assertContains('A', $container->up);
+        $this->assertContains('B', $container->up);
+
+        $this->assertNotContains('C', $container->up);
+    }
 }

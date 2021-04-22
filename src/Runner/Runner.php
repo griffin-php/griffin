@@ -56,9 +56,11 @@ class Runner
     /**
      * @SuppressWarnings(PHPMD.ShortMethodName)
      */
-    public function up(?string $name = null): self
+    public function up(string ...$names): self
     {
-        $names = $name ? [$name] : array_keys($this->migrations);
+        if (func_num_args() === 0) {
+            $names = array_keys($this->migrations);
+        }
 
         $visited = [];
 
