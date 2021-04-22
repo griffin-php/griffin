@@ -60,8 +60,8 @@ class Runner
     {
         $visited = [];
 
-        foreach ($this->migrations as $migration) {
-            $visited = $this->migrationUp($visited, $migration);
+        foreach (array_keys($this->migrations) as $name) {
+            $visited = $this->migrationUp($visited, $name);
         }
 
         return $this;
@@ -71,20 +71,22 @@ class Runner
      * @param string[] $visited
      * @return string[]
      */
-    protected function migrationUp(array $visited, MigrationInterface $migration): array
+    protected function migrationUp(array $visited, string $name): array
     {
-        array_push($visited, $migration->getName());
+        if (! isset($this->migrations[$name])) {
+            throw new Exception();
+        }
+
+        array_push($visited, $name);
+
+        $migration = $this->migrations[$name];
 
         foreach ($migration->getDependencies() as $dependency) {
             if (array_search($dependency, $visited) !== false) {
                 throw new Exception(); // Circular Dependency
             }
 
-            if (! isset($this->migrations[$dependency])) {
-                throw new Exception();
-            }
-
-            $this->migrationUp($visited, $this->migrations[$dependency]);
+            $this->migrationUp($visited, $dependency);
         }
 
         if (! $migration->assert()) {
