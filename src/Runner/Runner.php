@@ -56,7 +56,7 @@ class Runner
     /**
      * @SuppressWarnings(PHPMD.ShortMethodName)
      */
-    public function up(string $name = null): self
+    public function up(?string $name = null): self
     {
         $names = $name ? [$name] : array_keys($this->migrations);
 
