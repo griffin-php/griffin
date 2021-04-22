@@ -190,16 +190,15 @@ class UpTest extends TestCase
     {
         $container = $this->createContainer();
 
-        $migrations = [
-            $this->createMigration('A'),
-            $this->createMigration('B'),
-        ];
+        $migrationA = $this->createMigration('A');
+        $migrationB = $this->createMigration('B');
 
-        foreach ($migrations as $migration) {
-            $this->assertMigrationAssert($container, $migration);
-            $this->assertMigrationUp($container, $migration);
-            $this->runner->addMigration($migration);
-        }
+        // Migration A Only
+        $this->assertMigrationAssert($container, $migrationA);
+        $this->assertMigrationUp($container, $migrationA);
+
+        $this->runner->addMigration($migrationA);
+        $this->runner->addMigration($migrationB);
 
         $this->runner->up('A');
 
