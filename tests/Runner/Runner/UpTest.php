@@ -185,4 +185,25 @@ class UpTest extends TestCase
         $this->assertTrue($helper->before);
         $this->assertTrue($helper->after);
     }
+
+    public function testUpWithMigrationDefined(): void
+    {
+        $container = $this->createContainer();
+
+        $migrations = [
+            $this->createMigration('A'),
+            $this->createMigration('B'),
+        ];
+
+        foreach ($migrations as $migration) {
+            $this->assertMigrationAssert($container, $migration);
+            $this->assertMigrationUp($container, $migration);
+            $this->runner->addMigration($migration);
+        }
+
+        $this->runner->up('A');
+
+        $this->assertContains('A', $container->up);
+        $this->assertNotContains('B', $container->up);
+    }
 }
