@@ -17,7 +17,7 @@ class UpNamedTest extends TestCase
         $this->runner = new Runner();
     }
 
-    public function testUpWithMigrationDefined(): void
+    public function testMigration(): void
     {
         $container = $this->createContainer();
 
@@ -35,5 +35,42 @@ class UpNamedTest extends TestCase
 
         $this->assertContains('A', $container->up);
         $this->assertNotContains('B', $container->up);
+    }
+
+    public function testMigrationWithDependencies(): void
+    {
+        $container = $this->createContainer();
+
+        $graph1 = [
+            $this->createMigration('A'),
+            $this->createMigration('B'),
+            $this->createMigration('C', ['A', 'B']),
+        ];
+
+        $graph2 = [
+            $this->createMigration('D'),
+            $this->createMigration('E'),
+            $this->createMigration('F', ['D', 'E']),
+        ];
+
+        foreach ($graph1 as $migration) {
+            $this->assertMigrationAssert($container, $migration);
+            $this->assertMigrationUp($container, $migration);
+            $this->runner->addMigration($migration);
+        }
+
+        foreach ($graph2 as $migration) {
+            $this->runner->addMigration($migration);
+        }
+
+        $this->runner->up('C');
+
+        $this->assertContains('A', $container->up);
+        $this->assertContains('B', $container->up);
+        $this->assertContains('C', $container->up);
+
+        $this->assertNotContains('D', $container->up);
+        $this->assertNotContains('E', $container->up);
+        $this->assertNotContains('F', $container->up);
     }
 }
