@@ -72,6 +72,12 @@ $runner = (new Runner())
 
 $runner->up(); // creates everything
 $runner->down(); // destroys everthing
+
+// creates orders and products only
+$runner->up(
+    TableMigration\Order::class,
+    TableMigration\Product::class,
+);
 ```
 
 ```php
