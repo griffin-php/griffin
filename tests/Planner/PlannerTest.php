@@ -17,5 +17,6 @@ class PlannerTest extends TestCase
     public function testMigrations(): void
     {
         $this->assertSame([], $this->planner->getMigrations());
+        $this->assertFalse($this->planner->hasMigration('MIGRATION'));
     }
 }

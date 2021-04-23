@@ -24,4 +24,15 @@ class Planner
     {
         return $this->migrations;
     }
+
+    /**
+     * Check if Migration Exists
+     *
+     * @param $name Name
+     * @return Value Expected
+     */
+    public function hasMigration(string $name): bool
+    {
+        return isset($this->migrations[$name]);
+    }
 }
