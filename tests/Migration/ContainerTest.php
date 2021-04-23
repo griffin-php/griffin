@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace GriffinTest\Planner;
+namespace GriffinTest\Migration;
 
+use Griffin\Migration\Container;
+use Griffin\Migration\Exception;
 use Griffin\Migration\MigrationInterface;
-use Griffin\Planner\Exception;
-use Griffin\Planner\Planner;
 use PHPUnit\Framework\TestCase;
 
-class PlannerTest extends TestCase
+class ContainerTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->planner = new Planner();
+        $this->container = new Container();
     }
 
     protected function createMigration(string $name): MigrationInterface
@@ -28,13 +28,13 @@ class PlannerTest extends TestCase
 
     public function testMigrations(): void
     {
-        $this->assertSame([], $this->planner->getMigrations());
-        $this->assertFalse($this->planner->hasMigration('MIGRATION'));
+        $this->assertSame([], $this->container->getMigrations());
+        $this->assertFalse($this->container->hasMigration('MIGRATION'));
 
         $migration = $this->createMigration('MIGRATION');
 
-        $this->assertSame($this->planner, $this->planner->addMigration($migration));
-        $this->assertTrue($this->planner->hasMigration('MIGRATION'));
+        $this->assertSame($this->container, $this->container->addMigration($migration));
+        $this->assertTrue($this->container->hasMigration('MIGRATION'));
     }
 
     public function testMigrationsDuplicated(): void
@@ -44,7 +44,7 @@ class PlannerTest extends TestCase
         $migrationA = $this->createMigration('MIGRATION');
         $migrationB = $this->createMigration('MIGRATION');
 
-        $this->planner
+        $this->container
             ->addMigration($migrationA)
             ->addMigration($migrationB);
     }

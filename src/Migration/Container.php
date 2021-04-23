@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Griffin\Planner;
+namespace Griffin\Migration;
 
 use Griffin\Migration\MigrationInterface;
 
 /**
- * Planner
+ * Migration Container
  */
-class Planner
+class Container
 {
     /**
      * Migrations
@@ -42,7 +42,7 @@ class Planner
      * Add a Migration
      *
      * @param $migration Migration
-     * @throws Griffin\Planner\Exception Duplicated Migration
+     * @throws Griffin\Migration\Exception Duplicated Migration
      * @return Fluent Interface
      */
     public function addMigration(MigrationInterface $migration): self
