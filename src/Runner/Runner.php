@@ -4,33 +4,21 @@ declare(strict_types=1);
 
 namespace Griffin\Runner;
 
+use Griffin\Event\DispatcherAwareTrait;
 use Griffin\Event\Migration\DownAfter;
 use Griffin\Event\Migration\DownBefore;
 use Griffin\Event\Migration\UpAfter;
 use Griffin\Event\Migration\UpBefore;
 use Griffin\Migration\MigrationInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Runner
 {
-    protected ?EventDispatcherInterface $eventDispatcher = null;
+    use DispatcherAwareTrait;
 
     /**
      * @var Griffin\Migration\Migration[]
      */
     protected array $migrations = [];
-
-    public function setEventDispatcher(?EventDispatcherInterface $eventDispatcher): self
-    {
-        $this->eventDispatcher = $eventDispatcher;
-
-        return $this;
-    }
-
-    public function getEventDispatcher(): ?EventDispatcherInterface
-    {
-        return $this->eventDispatcher;
-    }
 
     /**
      * @return Griffin\Migration\Migration[]
