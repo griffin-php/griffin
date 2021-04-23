@@ -89,8 +89,6 @@ class PlannerTest extends TestCase
             $container->addMigration($migration);
         }
 
-        $names = array_map(fn($migration) => $migration->getName(), $this->planner->up()->getMigrations());
-
-        $this->assertSame(['A', 'D', 'C', 'B'], $names);
+        $this->assertSame(['A', 'D', 'C', 'B'], $this->planner->up()->getMigrationNames());
     }
 }

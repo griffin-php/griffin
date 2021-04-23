@@ -37,17 +37,6 @@ class Planner
     }
 
     /**
-     * Capture Migration Names
-     *
-     * @param Griffin\Migration\MigrationInterface[] $migrations List of Migrations
-     * @return string[] Expected Value
-     */
-    protected function getNames(array $migrations): array
-    {
-        return array_map(fn($migration) => $migration->getName(), $migrations);
-    }
-
-    /**
      * Plan Up Migration Execution by Name Recursively
      *
      * @param  $planned Migrations Already Planned
@@ -77,12 +66,9 @@ class Planner
      */
     public function up(): Container
     {
-        $planned    = new Container();
-        $migrations = $this->container->getMigrations();
+        $planned = new Container();
 
-        $names = $this->getNames($migrations);
-
-        foreach ($names as $name) {
+        foreach ($this->getContainer()->getMigrationNames() as $name) {
             $this->planUp($planned, $name);
         }
 
