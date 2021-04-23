@@ -43,12 +43,18 @@ class Planner
      * @param  $name    Current Migration Name
      * @return Fluent Interface
      */
-    protected function planUp(Container $planned, string $name): self
+    protected function planUp(Container $visited, Container $planned, string $name): self
     {
         $migration = $this->container->getMigration($name);
 
+        $visited->addMigration($migration);
+
         foreach ($migration->getDependencies() as $dependency) {
-            $this->planUp($planned, $dependency);
+            if ($visited->hasMigration($dependency)) {
+                throw new Exception("Circular Dependency"); // Circular Dependency
+            }
+
+            $this->planUp($visited, $planned, $dependency);
         }
 
         if (! $planned->hasMigration($name)) {
@@ -69,7 +75,7 @@ class Planner
         $planned = new Container();
 
         foreach ($this->getContainer()->getMigrationNames() as $name) {
-            $this->planUp($planned, $name);
+            $this->planUp(new Container(), $planned, $name);
         }
 
         return $planned;
