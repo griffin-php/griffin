@@ -48,6 +48,13 @@ trait MigrationTrait
             ->will($this->returnCallback(fn() => array_search($migration->getName(), $container->status) !== false));
     }
 
+    protected function assertNotMigrationAssert(StdClass $container, MockObject $migration): void
+    {
+        $migration->expects($this->never())
+            ->method('assert')
+            ->will($this->returnCallback(fn() => array_search($migration->getName(), $container->status) !== false));
+    }
+
     protected function assertMigrationUp(StdClass $container, MockObject $migration): void
     {
         $callback = function () use ($container, $migration): void {
@@ -60,6 +67,18 @@ trait MigrationTrait
             ->will($this->returnCallback($callback));
     }
 
+    protected function assertNotMigrationUp(StdClass $container, MockObject $migration): void
+    {
+        $callback = function () use ($container, $migration): void {
+            $container->status = array_merge($container->status, [$migration->getName()]);
+            $container->up     = array_merge($container->up, [$migration->getName()]);
+        };
+
+        $migration->expects($this->never())
+            ->method('up')
+            ->will($this->returnCallback($callback));
+    }
+
     protected function assertMigrationDown(StdClass $container, MockObject $migration): void
     {
         $callback = function () use ($container, $migration): void {
@@ -68,6 +87,18 @@ trait MigrationTrait
         };
 
         $migration->expects($this->once())
+            ->method('down')
+            ->will($this->returnCallback($callback));
+    }
+
+    protected function assertNotMigrationDown(StdClass $container, MockObject $migration): void
+    {
+        $callback = function () use ($container, $migration): void {
+            $container->status = array_diff($container->status, [$migration->getName()]);
+            $container->down   = array_merge($container->down, [$migration->getName()]);
+        };
+
+        $migration->expects($this->never())
             ->method('down')
             ->will($this->returnCallback($callback));
     }
