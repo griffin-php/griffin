@@ -73,4 +73,24 @@ class PlannerTest extends TestCase
 
         $this->assertSame([$migrationB, $migrationA], $this->planner->up()->getMigrations());
     }
+
+    public function testUpDependenciesDeep(): void
+    {
+        $container = $this->planner->getContainer();
+
+        $migrations = [
+            $this->createMigration('A'),
+            $this->createMigration('B', ['A', 'C']),
+            $this->createMigration('C', ['D']),
+            $this->createMigration('D'),
+        ];
+
+        foreach ($migrations as $migration) {
+            $container->addMigration($migration);
+        }
+
+        $names = array_map(fn($migration) => $migration->getName(), $this->planner->up()->getMigrations());
+
+        $this->assertSame(['A', 'D', 'C', 'B'], $names);
+    }
 }

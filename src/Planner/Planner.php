@@ -59,7 +59,7 @@ class Planner
         $migration = $this->container->getMigration($name);
 
         foreach ($migration->getDependencies() as $dependency) {
-            $planned->addMigration($this->container->getMigration($dependency));
+            $this->planUp($planned, $dependency);
         }
 
         if (! $planned->hasMigration($name)) {
