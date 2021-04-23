@@ -111,4 +111,29 @@ class DownNamedTest extends TestCase
 
         $this->assertContains('B', $container->status);
     }
+
+    public function testMigrationMultiple(): void
+    {
+        $container = $this->createContainer(['A', 'B', 'C']);
+
+        $migrations = [
+            $this->createMigration('A'),
+            $this->createMigration('B'),
+        ];
+
+        foreach ($migrations as $migration) {
+            $this->assertMigrationAssert($container, $migration);
+            $this->assertMigrationDown($container, $migration);
+            $this->runner->addMigration($migration);
+        }
+
+        $this->runner->addMigration($this->createMigration('C'));
+
+        $this->runner->down('A', 'B');
+
+        $this->assertContains('A', $container->down);
+        $this->assertContains('B', $container->down);
+
+        $this->assertNotContains('C', $container->down);
+    }
 }
