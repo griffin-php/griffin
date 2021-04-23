@@ -24,7 +24,7 @@ class Container
      */
     public function getMigrations(): array
     {
-        return $this->migrations;
+        return array_values($this->migrations);
     }
 
     /**

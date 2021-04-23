@@ -36,6 +36,7 @@ class ContainerTest extends TestCase
         $this->assertSame($this->container, $this->container->addMigration($migration));
         $this->assertTrue($this->container->hasMigration('MIGRATION'));
         $this->assertSame($migration, $this->container->getMigration('MIGRATION'));
+        $this->assertSame([$migration], $this->container->getMigrations());
     }
 
     public function testMigrationsDuplicated(): void
