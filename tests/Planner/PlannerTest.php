@@ -106,4 +106,14 @@ class PlannerTest extends TestCase
 
         $this->planner->up();
     }
+
+    public function testUpDependenciesSelf(): void
+    {
+        $this->expectException(Exception::class);
+
+        $this->planner->getContainer()
+            ->addMigration($this->createMigration('A', ['A']));
+
+        $this->planner->up();
+    }
 }
