@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace GriffinTest\Planner;
 
 use Griffin\Migration\Container;
+use Griffin\Migration\Exception as MigrationException;
 use Griffin\Migration\MigrationInterface;
 use Griffin\Planner\Exception;
 use Griffin\Planner\Planner;
@@ -113,6 +114,16 @@ class PlannerTest extends TestCase
 
         $this->planner->getContainer()
             ->addMigration($this->createMigration('A', ['A']));
+
+        $this->planner->up();
+    }
+
+    public function testUpDependencyUnknown(): void
+    {
+        $this->expectException(MigrationException::class);
+
+        $this->planner->getContainer()
+            ->addMigration($this->createMigration('A', ['B']));
 
         $this->planner->up();
     }
