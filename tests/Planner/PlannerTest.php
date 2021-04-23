@@ -151,4 +151,26 @@ class PlannerTest extends TestCase
         $this->assertContains($migrationC, $migrations);
         $this->assertContains($migrationD, $migrations);
     }
+
+    public function testDownBasic(): void
+    {
+        $container = $this->planner->getContainer();
+
+        $migrationA = $this->createMigration('A');
+        $migrationB = $this->createMigration('B');
+
+        $container->addMigration($migrationA);
+
+        $migrations = $this->planner->down();
+
+        $this->assertCount(1, $migrations);
+        $this->assertContains($migrationA, $migrations);
+
+        $container->addMigration($migrationB);
+
+        $migrations = $this->planner->down();
+
+        $this->assertCount(2, $migrations);
+        $this->assertContains($migrationB, $migrations);
+    }
 }

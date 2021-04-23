@@ -85,4 +85,14 @@ class Planner
 
         return $planned;
     }
+
+    /**
+     * Plan Down Migration Execution
+     *
+     * @return Migration Container in Sequence
+     */
+    public function down(): Container
+    {
+        return $this->getContainer();
+    }
 }
