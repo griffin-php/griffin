@@ -32,12 +32,25 @@ class PlannerTest extends TestCase
         $this->assertSame($this->container, $this->planner->getContainer());
     }
 
-    public function testUpSimple(): void
+    public function testUpBasic(): void
     {
-        $migration = $this->createMigration('A');
+        $container = $this->planner->getContainer();
 
-        $this->container->addMigration($migration);
+        $migrationA = $this->createMigration('A');
+        $migrationB = $this->createMigration('B');
 
-        $this->assertSame([$migration], $this->planner->up());
+        $container->addMigration($migrationA);
+
+        $migrations = $this->planner->up();
+
+        $this->assertCount(1, $migrations);
+        $this->assertContains($migrationA, $migrations);
+
+        $container->addMigration($migrationB);
+
+        $migrations = $this->planner->up();
+
+        $this->assertCount(2, $migrations);
+        $this->assertContains($migrationB, $migrations);
     }
 }
