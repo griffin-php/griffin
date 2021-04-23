@@ -24,11 +24,21 @@ class Container implements Countable, IteratorAggregate
     /**
      * Retrieve Migrations
      *
-     * @return Griffin\Migration\MigrationInterface[] Migrations
+     * @return Griffin\Migration\MigrationInterface[] Expected Values
      */
     public function getMigrations(): array
     {
         return array_values($this->migrations);
+    }
+
+    /**
+     * Retrieve Migration Names
+     *
+     * @return string[] Expected Values
+     */
+    public function getMigrationNames(): array
+    {
+        return array_keys($this->migrations);
     }
 
     /**

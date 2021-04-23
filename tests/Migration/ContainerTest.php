@@ -43,7 +43,9 @@ class ContainerTest extends TestCase
             ->addMigration($this->createMigration('BAZQUX'));
 
         $this->assertCount(3, $this->container->getMigrations());
-        $this->assertCount(3, $this->container);
+        $this->assertCount(3, $this->container); // Countable
+
+        $this->assertSame(['MIGRATION', 'FOOBAR', 'BAZQUX'], $this->container->getMigrationNames());
     }
 
     public function testMigrationsDuplicated(): void
