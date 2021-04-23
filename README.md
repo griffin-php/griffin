@@ -78,6 +78,12 @@ $runner->up(
     TableMigration\Order::class,
     TableMigration\Product::class,
 );
+
+// creates items (orders and products added)
+$runner->up(TableMigration\Item::class);
+
+// destroys items and orders (and not products)
+$runner->down(TableMigration\Order::class);
 ```
 
 ```php
