@@ -59,4 +59,18 @@ class RunnerTest extends TestCase
             ->addMigration($migrationOne)
             ->addMigration($migrationTwo); // Duplicated
     }
+
+    public function testMigrationWithFloatDependency(): void
+    {
+        $this->expectException(Exception::class);
+
+        $this->runner->addMigration($this->createMigration('FLOAT', [3.1415]));
+    }
+
+    public function testMigrationWithArrayDependency(): void
+    {
+        $this->expectException(Exception::class);
+
+        $this->runner->addMigration($this->createMigration('ARRAY', [[]]));
+    }
 }

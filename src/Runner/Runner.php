@@ -48,6 +48,12 @@ class Runner
             throw new Exception();
         }
 
+        foreach ($migration->getDependencies() as $dependency) {
+            if (! is_string($dependency)) {
+                throw new Exception();
+            }
+        }
+
         $this->migrations[$name] = $migration;
 
         return $this;
