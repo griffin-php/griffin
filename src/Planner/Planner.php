@@ -35,4 +35,15 @@ class Planner
     {
         return $this->container;
     }
+
+    /**
+     * Plan Up Migration Execution
+     *
+     * @return Griffin\Migration\Migration[] List of Migrations in Sequence
+     * @SuppressWarnings(PHPMD.ShortMethodName)
+     */
+    public function up(): array
+    {
+        return $this->container->getMigrations();
+    }
 }
