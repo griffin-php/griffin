@@ -134,20 +134,43 @@ class Runner
         }
     }
 
+    public function down(string ...$names): self
+    {
+        if (func_num_args() === 0) {
+            $names = array_keys($this->migrations);
+        }
+
+        $this->check();
+
+        $visited = [];
+
+        foreach ($names as $name) {
+            $visited = $this->migrationDown($visited, $name);
+        }
+
+        return $this;
+    }
+
     /**
      * @param string[] $visited
      * @return string[]
      */
-    protected function migrationDown(array $visited, MigrationInterface $migration): array
+    protected function migrationDown(array $visited, string $name): array
     {
-        array_push($visited, $migration->getName());
+        if (! isset($this->migrations[$name])) {
+            throw new Exception();
+        }
+
+        array_push($visited, $name);
+
+        $migration = $this->migrations[$name];
 
         foreach ($this->getDependents($migration) as $dependent) {
             if (array_search($dependent, $visited) !== false) {
                 throw new Exception(); // Circular Dependency
             }
 
-            $this->migrationDown($visited, $this->migrations[$dependent]);
+            $this->migrationDown($visited, $dependent);
         }
 
         if ($migration->assert()) {
@@ -165,18 +188,5 @@ class Runner
         }
 
         return $visited;
-    }
-
-    public function down(): self
-    {
-        $this->check();
-
-        $visited = [];
-
-        foreach ($this->migrations as $migration) {
-            $visited = $this->migrationDown($visited, $migration);
-        }
-
-        return $this;
     }
 }
