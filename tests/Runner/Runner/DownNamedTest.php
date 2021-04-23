@@ -79,4 +79,36 @@ class DownNamedTest extends TestCase
         $this->assertNotContains('E', $container->down);
         $this->assertNotContains('F', $container->down);
     }
+
+    public function testMigrationPartialDependencies(): void
+    {
+        $container = $this->createContainer(['A', 'B', 'C']);
+
+        $migrationA = $this->createMigration('A');
+        $migrationB = $this->createMigration('B');
+        $migrationC = $this->createMigration('C', ['A', 'B']);
+
+        $this->assertMigrationAssert($container, $migrationA);
+        $this->assertMigrationDown($container, $migrationA);
+
+        $this->assertNotMigrationAssert($container, $migrationB);
+        $this->assertNotMigrationDown($container, $migrationB);
+
+        $this->assertMigrationAssert($container, $migrationC);
+        $this->assertMigrationDown($container, $migrationC);
+
+        $this->runner
+            ->addMigration($migrationA)
+            ->addMigration($migrationB)
+            ->addMigration($migrationC);
+
+        // Removes A and C and (not B)
+        $this->runner->down('A');
+
+        $this->assertContains('A', $container->down);
+        $this->assertNotContains('B', $container->down);
+        $this->assertContains('C', $container->down);
+
+        $this->assertContains('B', $container->status);
+    }
 }
