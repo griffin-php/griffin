@@ -40,11 +40,16 @@ class Runner
         return array_values($this->migrations);
     }
 
+    public function hasMigration(string $name): bool
+    {
+        return isset($this->migrations[$name]);
+    }
+
     public function addMigration(MigrationInterface $migration): self
     {
         $name = $migration->getName();
 
-        if (isset($this->migrations[$name])) {
+        if ($this->hasMigration($name)) {
             throw new Exception();
         }
 
@@ -57,11 +62,6 @@ class Runner
         $this->migrations[$name] = $migration;
 
         return $this;
-    }
-
-    public function hasMigration(string $name): bool
-    {
-        return isset($this->migrations[$name]);
     }
 
     /**
@@ -88,7 +88,7 @@ class Runner
      */
     protected function migrationUp(array $visited, string $name): array
     {
-        if (! isset($this->migrations[$name])) {
+        if (! $this->hasMigration($name)) {
             throw new Exception();
         }
 
@@ -168,7 +168,7 @@ class Runner
      */
     protected function migrationDown(array $visited, string $name): array
     {
-        if (! isset($this->migrations[$name])) {
+        if (! $this->hasMigration($name)) {
             throw new Exception();
         }
 
