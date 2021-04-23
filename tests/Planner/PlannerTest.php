@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace GriffinTest\Planner;
 
 use Griffin\Migration\MigrationInterface;
+use Griffin\Planner\Exception;
 use Griffin\Planner\Planner;
 use PHPUnit\Framework\TestCase;
 
@@ -34,5 +35,17 @@ class PlannerTest extends TestCase
 
         $this->assertSame($this->planner, $this->planner->addMigration($migration));
         $this->assertTrue($this->planner->hasMigration('MIGRATION'));
+    }
+
+    public function testMigrationsDuplicated(): void
+    {
+        $this->expectException(Exception::class);
+
+        $migrationA = $this->createMigration('MIGRATION');
+        $migrationB = $this->createMigration('MIGRATION');
+
+        $this->planner
+            ->addMigration($migrationA)
+            ->addMigration($migrationB);
     }
 }

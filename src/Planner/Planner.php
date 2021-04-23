@@ -48,6 +48,10 @@ class Planner
     {
         $name = $migration->getName();
 
+        if ($this->hasMigration($name)) {
+            throw new Exception();
+        }
+
         $this->migrations[$name] = $migration;
 
         return $this;
