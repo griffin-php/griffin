@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Griffin\Planner;
 
+use Griffin\Migration\MigrationInterface;
+
 /**
  * Planner
  */
@@ -34,5 +36,20 @@ class Planner
     public function hasMigration(string $name): bool
     {
         return isset($this->migrations[$name]);
+    }
+
+    /**
+     * Add a Migration
+     *
+     * @param $migration Migration
+     * @return Fluent Interface
+     */
+    public function addMigration(MigrationInterface $migration): self
+    {
+        $name = $migration->getName();
+
+        $this->migrations[$name] = $migration;
+
+        return $this;
     }
 }
