@@ -66,4 +66,12 @@ class ContainerTest extends TestCase
 
         $this->container->getMigration('UNKNOWN');
     }
+
+    public function testMigrationAllowUnknownDependency(): void
+    {
+        // Everything must Work
+        $this->expectNotToPerformAssertions();
+
+        $this->container->addMigration($this->createMigration('A', ['B']));
+    }
 }
