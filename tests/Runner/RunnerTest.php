@@ -39,7 +39,6 @@ class RunnerTest extends TestCase
         $this->assertSame([$migration], $this->runner->getMigrations());
 
         $this->assertSame($migration, $this->runner->getMigration('MIGRATION'));
-        $this->assertNull($this->runner->getMigration('UNKNOWN'));
 
         $otherMigration   = $this->createMigration('MIGRATION_OTHER');
         $anotherMigration = $this->createMigration('MIGRATION_ANOTHER');
@@ -52,6 +51,13 @@ class RunnerTest extends TestCase
 
         $this->assertTrue($this->runner->hasMigration('MIGRATION'));
         $this->assertFalse($this->runner->hasMigration('UNKNOWN'));
+    }
+
+    public function testMigrationUnknown(): void
+    {
+        $this->expectException(Exception::class);
+
+        $this->assertNull($this->runner->getMigration('UNKNOWN'));
     }
 
     public function testMigrationsDuplicated(): void

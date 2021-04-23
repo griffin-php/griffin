@@ -25,10 +25,10 @@ class Runner
         return array_values($this->migrations);
     }
 
-    public function getMigration(string $name): ?MigrationInterface
+    public function getMigration(string $name): MigrationInterface
     {
         if (! $this->hasMigration($name)) {
-            return null;
+            throw new Exception();
         }
 
         return $this->migrations[$name];
@@ -88,7 +88,7 @@ class Runner
 
         array_push($visited, $name);
 
-        $migration = $this->migrations[$name];
+        $migration = $this->getMigration($name);
 
         foreach ($migration->getDependencies() as $dependency) {
             if (array_search($dependency, $visited) !== false) {
@@ -168,7 +168,7 @@ class Runner
 
         array_push($visited, $name);
 
-        $migration = $this->migrations[$name];
+        $migration = $this->getMigration($name);
 
         foreach ($this->getDependents($migration) as $dependent) {
             if (array_search($dependent, $visited) !== false) {
