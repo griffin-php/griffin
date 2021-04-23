@@ -42,6 +42,7 @@ class Planner
      * Add a Migration
      *
      * @param $migration Migration
+     * @throws Griffin\Planner\Exception Duplicated Migration
      * @return Fluent Interface
      */
     public function addMigration(MigrationInterface $migration): self
