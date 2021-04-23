@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace Griffin\Runner;
 
 use Griffin\Event\DispatcherAwareTrait;
-use Griffin\Event\Migration\DownAfter;
-use Griffin\Event\Migration\DownBefore;
-use Griffin\Event\Migration\UpAfter;
-use Griffin\Event\Migration\UpBefore;
+use Griffin\Event\Migration as MigrationEvent;
 use Griffin\Migration\MigrationInterface;
 
 class Runner
@@ -96,13 +93,13 @@ class Runner
             $eventDispatcher = $this->getEventDispatcher();
 
             if ($eventDispatcher) {
-                $eventDispatcher->dispatch(new UpBefore($migration));
+                $eventDispatcher->dispatch(new MigrationEvent\UpBefore($migration));
             }
 
             $migration->up();
 
             if ($eventDispatcher) {
-                $eventDispatcher->dispatch(new UpAfter($migration));
+                $eventDispatcher->dispatch(new MigrationEvent\UpAfter($migration));
             }
         }
 
@@ -176,13 +173,13 @@ class Runner
             $eventDispatcher = $this->getEventDispatcher();
 
             if ($eventDispatcher) {
-                $eventDispatcher->dispatch(new DownBefore($migration));
+                $eventDispatcher->dispatch(new MigrationEvent\DownBefore($migration));
             }
 
             $migration->down();
 
             if ($eventDispatcher) {
-                $eventDispatcher->dispatch(new DownAfter($migration));
+                $eventDispatcher->dispatch(new MigrationEvent\DownAfter($migration));
             }
         }
 
