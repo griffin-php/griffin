@@ -67,14 +67,19 @@ class Planner
     /**
      * Plan Up Migration Execution
      *
+     * @param $names Migration Names
      * @return Migration Container in Sequence
      * @SuppressWarnings(PHPMD.ShortMethodName)
      */
-    public function up(): Container
+    public function up(string ...$names): Container
     {
+        if (func_num_args() === 0) {
+            $names = $this->getContainer()->getMigrationNames();
+        }
+
         $planned = new Container();
 
-        foreach ($this->getContainer()->getMigrationNames() as $name) {
+        foreach ($names as $name) {
             $this->planUp(new Container(), $planned, $name);
         }
 

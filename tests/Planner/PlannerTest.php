@@ -127,4 +127,22 @@ class PlannerTest extends TestCase
 
         $this->planner->up();
     }
+
+    public function testUpNamed(): void
+    {
+        $container = $this->planner->getContainer();
+
+        $migrationA = $this->createMigration('A');
+        $migrationB = $this->createMigration('B');
+
+        $container
+            ->addMigration($migrationA)
+            ->addMigration($migrationB);
+
+        $migrations = $this->planner->up('A');
+
+        $this->assertCount(1, $migrations);
+        $this->assertContains($migrationA, $migrations);
+        $this->assertNotContains($migrationB, $migrations);
+    }
 }
