@@ -17,12 +17,18 @@ class PlannerTest extends TestCase
         $this->planner   = new Planner($this->container);
     }
 
-    protected function createMigration(string $name): MigrationInterface
+    /**
+     * @param string[] $dependencies
+     */
+    protected function createMigration(string $name, array $dependencies = []): MigrationInterface
     {
         $migration = $this->createMock(MigrationInterface::class);
 
         $migration->method('getName')
             ->will($this->returnValue($name));
+
+        $migration->method('getDependencies')
+            ->will($this->returnValue($dependencies));
 
         return $migration;
     }
@@ -52,5 +58,19 @@ class PlannerTest extends TestCase
 
         $this->assertCount(2, $migrations);
         $this->assertContains($migrationB, $migrations);
+    }
+
+    public function testUpDependencies(): void
+    {
+        $container = $this->planner->getContainer();
+
+        $migrationA = $this->createMigration('A', ['B']);
+        $migrationB = $this->createMigration('B');
+
+        $container
+            ->addMigration($migrationA)
+            ->addMigration($migrationB);
+
+        $this->assertSame([$migrationB, $migrationA], $this->planner->up()->getMigrations());
     }
 }

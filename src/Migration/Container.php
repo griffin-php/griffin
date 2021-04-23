@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace Griffin\Migration;
 
+use ArrayIterator;
+use Countable;
 use Griffin\Migration\MigrationInterface;
+use IteratorAggregate;
+use Traversable;
 
 /**
  * Migration Container
  */
-class Container
+class Container implements Countable, IteratorAggregate
 {
     /**
      * Migrations
@@ -31,7 +35,7 @@ class Container
      * Check if Migration Exists
      *
      * @param $name Name
-     * @return Value Expected
+     * @return Expected Value
      */
     public function hasMigration(string $name): bool
     {
@@ -50,7 +54,7 @@ class Container
         $name = $migration->getName();
 
         if ($this->hasMigration($name)) {
-            throw new Exception();
+            throw new Exception('Duplicated Migration ' . $name);
         }
 
         $this->migrations[$name] = $migration;
@@ -63,7 +67,7 @@ class Container
      *
      * @param $name Name
      * @throws Griffin\Migration\Exception Unknown Name
-     * @return Value Expected
+     * @return Expected Value
      */
     public function getMigration(string $name): MigrationInterface
     {
@@ -72,5 +76,25 @@ class Container
         }
 
         return $this->migrations[$name];
+    }
+
+    /**
+     * Length of Migration Added
+     *
+     * @return Expected Value
+     */
+    public function count(): int
+    {
+        return count($this->migrations);
+    }
+
+    /**
+     * Container Iterator
+     *
+     * @return Expected Value
+     */
+    public function getIterator(): Traversable
+    {
+        return new ArrayIterator($this->migrations);
     }
 }

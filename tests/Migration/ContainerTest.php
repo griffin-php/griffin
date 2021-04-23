@@ -43,6 +43,7 @@ class ContainerTest extends TestCase
             ->addMigration($this->createMigration('BAZQUX'));
 
         $this->assertCount(3, $this->container->getMigrations());
+        $this->assertCount(3, $this->container);
     }
 
     public function testMigrationsDuplicated(): void
