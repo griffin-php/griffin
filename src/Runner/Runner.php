@@ -82,13 +82,9 @@ class Runner
      */
     protected function migrationUp(array $visited, string $name): array
     {
-        if (! $this->hasMigration($name)) {
-            throw new Exception();
-        }
+        $migration = $this->getMigration($name);
 
         array_push($visited, $name);
-
-        $migration = $this->getMigration($name);
 
         foreach ($migration->getDependencies() as $dependency) {
             if (array_search($dependency, $visited) !== false) {
@@ -162,13 +158,9 @@ class Runner
      */
     protected function migrationDown(array $visited, string $name): array
     {
-        if (! $this->hasMigration($name)) {
-            throw new Exception();
-        }
+        $migration = $this->getMigration($name);
 
         array_push($visited, $name);
-
-        $migration = $this->getMigration($name);
 
         foreach ($this->getDependents($migration) as $dependent) {
             if (array_search($dependent, $visited) !== false) {
