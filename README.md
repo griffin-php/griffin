@@ -1,10 +1,10 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/griffin-php/griffin/main/icon.svg" width="200">
-</p>
-
 # griffin
 
-**WORK IN PROGRESS** Griffin is a Graph-Oriented Migration Framework for PHP
+<div>
+  <p align="center"><img src="https://raw.githubusercontent.com/griffin-php/griffin/main/icon.svg" width="200"></p>
+  <p align="center"><b>WORK IN PROGRESS</b> Griffin is a Graph-Oriented Migration Framework for PHP</div>
+</div>
+
 
 ## Example
 
