@@ -59,6 +59,11 @@ class Runner
         return $this;
     }
 
+    public function hasMigration(string $name): bool
+    {
+        return isset($this->migrations[$name]);
+    }
+
     /**
      * @SuppressWarnings(PHPMD.ShortMethodName)
      */
