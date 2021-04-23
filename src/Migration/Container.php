@@ -57,4 +57,20 @@ class Container
 
         return $this;
     }
+
+    /**
+     * Retrieve a Migration
+     *
+     * @param $name Name
+     * @throws Griffin\Migration\Exception Unknown Name
+     * @return Value Expected
+     */
+    public function getMigration(string $name): MigrationInterface
+    {
+        if (! $this->hasMigration($name)) {
+            throw new Exception();
+        }
+
+        return $this->migrations[$name];
+    }
 }
