@@ -73,7 +73,7 @@ class PlannerTest extends TestCase
             ->addMigration($migrationA)
             ->addMigration($migrationB);
 
-        $this->assertSame([$migrationB, $migrationA], $this->planner->up()->getMigrations());
+        $this->assertSame(['B', 'A'], $this->planner->up()->getMigrationNames());
     }
 
     public function testUpDependenciesDeep(): void
@@ -172,5 +172,19 @@ class PlannerTest extends TestCase
 
         $this->assertCount(2, $migrations);
         $this->assertContains($migrationB, $migrations);
+    }
+
+    public function testDownDependencies(): void
+    {
+        $container = $this->planner->getContainer();
+
+        $migrationA = $this->createMigration('A');
+        $migrationB = $this->createMigration('B', ['A']);
+
+        $container
+            ->addMigration($migrationA)
+            ->addMigration($migrationB);
+
+        $this->assertSame(['B', 'A'], $this->planner->down()->getMigrationNames());
     }
 }

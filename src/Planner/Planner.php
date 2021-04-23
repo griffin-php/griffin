@@ -93,6 +93,15 @@ class Planner
      */
     public function down(): Container
     {
-        return $this->getContainer();
+        $planned = new Container();
+
+        $names = $this->getContainer()->getMigrationNames();
+        $names = array_reverse($names); // TODO Fix
+
+        foreach ($names as $name) {
+            $planned->addMigration($this->getContainer()->getMigration($name));
+        }
+
+        return $planned;
     }
 }
