@@ -25,7 +25,7 @@ class DownNamedTest extends TestCase
         $migrationB = $this->createMigration('B');
 
         $this->assertMigrationAssert($container, $migrationA);
-        $this->assertMigrationAssert($container, $migrationB);
+        $this->assertNotMigrationAssert($container, $migrationB);
 
         // Migration A Only
         $this->assertMigrationDown($container, $migrationA);
