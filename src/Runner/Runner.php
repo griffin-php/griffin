@@ -25,6 +25,15 @@ class Runner
         return array_values($this->migrations);
     }
 
+    public function getMigration(string $name): ?MigrationInterface
+    {
+        if (! $this->hasMigration($name)) {
+            return null;
+        }
+
+        return $this->migrations[$name];
+    }
+
     public function hasMigration(string $name): bool
     {
         return isset($this->migrations[$name]);
