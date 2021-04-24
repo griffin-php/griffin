@@ -23,6 +23,8 @@ use Griffin\Migration\Migration;
 use Griffin\Planner\Planner;
 use Griffin\Runner\Runner;
 
+$driver = new Driver(); // Pseudo Database Driver
+
 $orders = (new Migration())
     ->withName('orders')
     ->withAssert(fn() => $driver->table->has('orders'))
