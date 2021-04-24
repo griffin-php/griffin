@@ -61,6 +61,8 @@ stable version.
 }
 ```
 
+### CLI
+
 This package includes the Griffin framework. If you want a CLI to run your
 migrations, please check
 [Griffin CLI](https://github.com/griffin-php/griffin-cli).
