@@ -70,14 +70,13 @@ class Runner
     /**
      * Run Migrations Up
      *
-     * @param $names Migration Names
+     * @param  $container Migrations Container
+     * @throws Throwable  Migration Error
      * @return Fluent Interface
-     * @SuppressWarnings(PHPMD.ShortMethodName)
      */
-    public function up(string ...$names): self
+    protected function runUp(Container $container): self
     {
         $visited    = new Container();
-        $container  = $this->getPlanner()->up(...$names);
         $dispatcher = $this->getEventDispatcher();
 
         foreach ($container as $migration) {
@@ -92,12 +91,7 @@ class Runner
                     $visited->addMigration($migration);
                 } catch (Throwable $error) {
                     // Error Found
-                    foreach ($visited as $migration) {
-                        if ($migration->assert()) {
-                            // Rollback
-                            $migration->down(); // TODO $this->down();
-                        }
-                    }
+                    $this->runDown($visited);
                     // Show Errors
                     throw $error;
                 }
@@ -110,17 +104,29 @@ class Runner
         return $this;
     }
 
+    /**
+     * Run Migrations Up
+     *
+     * @param  $names    Migration Names
+     * @throws Throwable Migration Error
+     * @return Fluent Interface
+     * @SuppressWarnings(PHPMD.ShortMethodName)
+     */
+    public function up(string ...$names): self
+    {
+        return $this->runUp($this->getPlanner()->up(...$names));
+    }
 
     /**
      * Run Migrations Down
      *
-     * @param $names Migration Names
+     * @param  $container Migrations Container
+     * @throws Throwable  Migration Error
      * @return Fluent Interface
      */
-    public function down(string ...$names): self
+    protected function runDown(Container $container): self
     {
         $visited    = new Container();
-        $container  = $this->getPlanner()->down(...$names);
         $dispatcher = $this->getEventDispatcher();
 
         foreach ($container as $migration) {
@@ -135,12 +141,7 @@ class Runner
                     $visited->addMigration($migration);
                 } catch (Throwable $error) {
                     // Error Found
-                    foreach ($visited as $migration) {
-                        if (! $migration->assert()) {
-                            // Rollback
-                            $migration->up(); // TODO $this->up();
-                        }
-                    }
+                    $this->runUp($visited);
                     // Show Errors
                     throw $error;
                 }
@@ -151,5 +152,17 @@ class Runner
         }
 
         return $this;
+    }
+
+    /**
+     * Run Migrations Down
+     *
+     * @param  $names    Migration Names
+     * @throws Throwable Migration Error
+     * @return Fluent Interface
+     */
+    public function down(string ...$names): self
+    {
+        return $this->runDown($this->getPlanner()->down(...$names));
     }
 }
