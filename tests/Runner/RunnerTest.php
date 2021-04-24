@@ -352,21 +352,21 @@ class RunnerTest extends TestCase
         $status->B = false;
         $status->C = false;
 
+        $status->counter = 0;
+
         foreach ([$migrationA, $migrationB, $migrationC] as $migration) {
             $name = $migration->getName();
 
             $migration
                 ->method('assert')
                 ->will($this->returnCallback(function () use ($status, $name) {
-                    // Looping Control
-                    static $counter = 0;
-                    // 10 Iterations?
-                    if ($counter === 10) {
+                    // Limit?
+                    if ($status->counter === 30) {
                         // Stop It!
                         throw new RuntimeException('Looping Found!');
                     }
                     // Next Step
-                    $counter++;
+                    $status->counter++;
 
                     return ! $status->$name = ! $status->$name;
                 }));
