@@ -66,7 +66,7 @@ class Container implements Countable, IteratorAggregate
         if ($this->hasMigration($name)) {
             throw new Exception(
                 sprintf('Duplicated Migration Name: "%s"', $name),
-                Exception::DUPLICATED,
+                Exception::NAME_DUPLICATED,
             );
         }
 
@@ -87,7 +87,7 @@ class Container implements Countable, IteratorAggregate
         if (! $this->hasMigration($name)) {
             throw new Exception(
                 sprintf('Unknown Migration Name: "%s"', $name),
-                Exception::UNKNOWN,
+                Exception::NAME_UNKNOWN,
             );
         }
 

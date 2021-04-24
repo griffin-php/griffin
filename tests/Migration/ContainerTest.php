@@ -51,7 +51,7 @@ class ContainerTest extends TestCase
     public function testMigrationsDuplicated(): void
     {
         $this->expectException(Exception::class);
-        $this->expectExceptionCode(Exception::DUPLICATED);
+        $this->expectExceptionCode(Exception::NAME_DUPLICATED);
         $this->expectExceptionMessage('Duplicated Migration Name: "MIGRATION"');
 
         $migrationA = $this->createMigration('MIGRATION');
@@ -65,7 +65,7 @@ class ContainerTest extends TestCase
     public function testMigrationUnknown(): void
     {
         $this->expectException(Exception::class);
-        $this->expectExceptionCode(Exception::UNKNOWN);
+        $this->expectExceptionCode(Exception::NAME_UNKNOWN);
         $this->expectExceptionMessage('Unknown Migration Name: "UNKNOWN"');
 
         $this->container->getMigration('UNKNOWN');

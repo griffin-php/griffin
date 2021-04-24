@@ -8,6 +8,7 @@ use Exception as BaseException;
 
 class Exception extends BaseException
 {
-    const UNKNOWN    = 1;
-    const DUPLICATED = 2;
+    const NAME_UNKNOWN     = 1;
+    const NAME_DUPLICATED  = 2;
+    const CALLABLE_UNKNOWN = 4;
 }
