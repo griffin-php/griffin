@@ -31,6 +31,7 @@ $orders = (new Migration())
 
 $items = (new Migration())
     ->withName('items')
+    ->withDependencies(['orders'])
     ->withAssert(fn() => $driver->table->has('items'))
     ->withUp(fn() => $driver->table->create('items'))
     ->withDown(fn() => $driver->table->drop('items'));
