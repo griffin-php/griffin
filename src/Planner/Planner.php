@@ -98,7 +98,9 @@ class Planner
         $dependents = [];
 
         foreach ($this->getContainer() as $migration) {
-            $dependencies = $migration->getDependencies();
+            // Resolve Unknown Dependents
+            $resolver     = fn($dependency) => $this->getContainer()->getMigration($dependency)->getName();
+            $dependencies = array_map($resolver, $migration->getDependencies());
 
             if (false !== array_search($name, $dependencies)) {
                 array_push($dependents, $migration->getName());
