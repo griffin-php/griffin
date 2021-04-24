@@ -33,7 +33,13 @@ jobs:
       - name: Test
         run: docker-compose run -e COVERAGE_OPTIONS php composer test
         env:
-          COVERAGE_OPTIONS: --coverage-text
+          COVERAGE_OPTIONS: --coverage-text --coverage-clover coverage.xml
+
+      - name: Codecov
+        run: bash <(curl -s https://codecov.io/bash) -f coverage.xml
+        if: github.ref == 'refs/heads/main'
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Clean
         run: docker-compose down
