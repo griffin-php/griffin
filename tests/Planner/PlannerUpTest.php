@@ -4,36 +4,13 @@ declare(strict_types=1);
 
 namespace GriffinTest\Planner;
 
-use Griffin\Migration\Container;
 use Griffin\Migration\Exception as MigrationException;
-use Griffin\Migration\MigrationInterface;
 use Griffin\Planner\Exception;
-use Griffin\Planner\Planner;
 use PHPUnit\Framework\TestCase;
 
 class PlannerUpTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        $this->container = new Container();
-        $this->planner   = new Planner($this->container);
-    }
-
-    /**
-     * @param string[] $dependencies
-     */
-    protected function createMigration(string $name, array $dependencies = []): MigrationInterface
-    {
-        $migration = $this->createMock(MigrationInterface::class);
-
-        $migration->method('getName')
-            ->will($this->returnValue($name));
-
-        $migration->method('getDependencies')
-            ->will($this->returnValue($dependencies));
-
-        return $migration;
-    }
+    use PlannerTrait;
 
     public function testBasic(): void
     {
