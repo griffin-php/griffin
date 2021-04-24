@@ -2,7 +2,7 @@
 
 <div>
   <p align="center"><img src="https://raw.githubusercontent.com/griffin-php/griffin/main/icon.svg" width="200"></p>
-  <p align="center"><b>WORK IN PROGRESS</b> Griffin is a Graph-Oriented Migration Framework for PHP</div>
+  <p align="center">Griffin is a Graph-Oriented Migration Framework for PHP</div>
 </div>
 
 [![Build Status](https://github.com/griffin-php/griffin/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/griffin-php/griffin/actions/workflows/test.yml?query=branch%3Amain)
