@@ -70,13 +70,14 @@ class Runner
     /**
      * Run Migrations Up
      *
-     * @param  $container Migrations Container
-     * @throws Throwable  Migration Error
+     * @param  $names    Migration Names
+     * @throws Throwable Migration Error
      * @return Fluent Interface
      */
-    protected function runUp(Container $container): self
+    protected function runUp(string ...$names): self
     {
         $visited    = new Container();
+        $container  = $this->getPlanner()->up(...$names);
         $dispatcher = $this->getEventDispatcher();
 
         foreach ($container as $migration) {
@@ -91,7 +92,7 @@ class Runner
                     $visited->addMigration($migration);
                 } catch (Throwable $error) {
                     // Error Found
-                    $this->runDown($visited);
+                    $this->runDown(...$visited->getMigrationNames());
                     // Show Errors
                     throw $error;
                 }
@@ -114,19 +115,20 @@ class Runner
      */
     public function up(string ...$names): self
     {
-        return $this->runUp($this->getPlanner()->up(...$names));
+        return $this->runUp(...$names);
     }
 
     /**
      * Run Migrations Down
      *
-     * @param  $container Migrations Container
-     * @throws Throwable  Migration Error
+     * @param  $names    Migration Names
+     * @throws Throwable Migration Error
      * @return Fluent Interface
      */
-    protected function runDown(Container $container): self
+    protected function runDown(string ...$names): self
     {
         $visited    = new Container();
+        $container  = $this->getPlanner()->down(...$names);
         $dispatcher = $this->getEventDispatcher();
 
         foreach ($container as $migration) {
@@ -141,7 +143,7 @@ class Runner
                     $visited->addMigration($migration);
                 } catch (Throwable $error) {
                     // Error Found
-                    $this->runUp($visited);
+                    $this->runUp(...$visited->getMigrationNames());
                     // Show Errors
                     throw $error;
                 }
@@ -163,6 +165,6 @@ class Runner
      */
     public function down(string ...$names): self
     {
-        return $this->runDown($this->getPlanner()->down(...$names));
+        return $this->runDown(...$names);
     }
 }

@@ -14,6 +14,8 @@ use Griffin\Runner\Runner;
 use League\Event\EventDispatcher;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
+use StdClass;
 
 class RunnerTest extends TestCase
 {
@@ -162,9 +164,9 @@ class RunnerTest extends TestCase
         $migrationB = $this->createMigration('B', ['C']);
         $migrationC = $this->createMigration('C');
 
-        $migrationA->expects($this->once())
+        $migrationA->expects($this->exactly(2))
             ->method('assert')
-            ->will($this->returnValue(false));
+            ->will($this->onConsecutiveCalls(false, true));
 
         $migrationA->expects($this->once())
             ->method('up')
@@ -318,9 +320,9 @@ class RunnerTest extends TestCase
             $container->addMigration($migration);
         }
 
-        $migrationC->expects($this->once())
+        $migrationC->expects($this->exactly(2))
             ->method('assert')
-            ->will($this->returnValue(true));
+            ->will($this->onConsecutiveCalls(true, false));
 
         $migrationC->expects($this->once())
             ->method('down')
@@ -329,5 +331,55 @@ class RunnerTest extends TestCase
         $container->addMigration($migrationC);
 
         $this->runner->down();
+    }
+
+    public function testUpDownLoopingRollback(): void
+    {
+        // TODO Up Exception on C
+        $this->expectException(BaseException::class);
+        $this->expectExceptionCode(321);
+        $this->expectExceptionMessage('Down Error on A');
+
+        $container = $this->runner->getPlanner()->getContainer();
+
+        $migrationA = $this->createMigration('A');
+        $migrationB = $this->createMigration('B', ['A']);
+        $migrationC = $this->createMigration('C', ['B']);
+
+        $status = new StdClass();
+
+        $status->A = false;
+        $status->B = false;
+        $status->C = false;
+
+        foreach ([$migrationA, $migrationB, $migrationC] as $migration) {
+            $name = $migration->getName();
+
+            $migration
+                ->method('assert')
+                ->will($this->returnCallback(function () use ($status, $name) {
+                    // Looping Control
+                    static $counter = 0;
+                    // 10 Iterations?
+                    if ($counter === 10) {
+                        // Stop It!
+                        throw new RuntimeException('Looping Found!');
+                    }
+                    // Next Step
+                    $counter++;
+
+                    return ! $status->$name = ! $status->$name;
+                }));
+
+            $container->addMigration($migration);
+        }
+
+        $migrationC->method('up')
+            ->will($this->throwException(new BaseException('Up Exception on C', 123)));
+
+        $migrationA->method('down')
+            ->will($this->throwException(new BaseException('Down Error on A', 321)));
+
+        $this->runner->up();
     }
 }
