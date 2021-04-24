@@ -46,6 +46,20 @@ $runner->up('items'); // create orders and items
 $runner->down('orders'); // destroy orders and items
 ```
 
+## Installation
+
+This package uses Composer as default repository. You can install it adding the
+name of package in `require` section of `composer.json`, pointing to the latest
+stable version.
+
+```json
+{
+  "require": {
+    "griffin/griffin": "^1.0"
+  }
+}
+```
+
 ## Introduction
 
 Migrations are tools to change system current state, adding features based on
