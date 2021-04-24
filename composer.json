@@ -32,7 +32,7 @@
   "scripts": {
     "test": [
       "parallel-lint src tests",
-      "phpunit",
+      "phpunit $COVERAGE_OPTIONS",
       "phpcpd src tests",
       "phpmd src,tests text phpmd.xml",
       "phpcs"
