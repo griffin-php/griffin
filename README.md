@@ -61,6 +61,10 @@ vertice and dependencies define directed paths. Griffin searches for circular
 dependencies on planning and can automatically rollback changes if some
 migration found errors during its execution.
 
+Griffin is a generic migration framework and it is not database focused. You are
+free to use Griffin to provisioning what needed, like directory structures,
+packages and even database schemas.
+
 ## Example
 
 ```php
