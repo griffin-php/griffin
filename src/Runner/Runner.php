@@ -76,17 +76,15 @@ class Runner
      */
     public function up(string ...$names): self
     {
-        $visited   = new Container();
-        $container = $this->getPlanner()->up(...$names);
+        $visited    = new Container();
+        $container  = $this->getPlanner()->up(...$names);
+        $dispatcher = $this->getEventDispatcher();
 
         foreach ($container as $migration) {
             if (! $migration->assert()) {
-                $dispatcher = $this->getEventDispatcher();
-
                 if ($dispatcher) {
                     $dispatcher->dispatch(new Event\Migration\UpBefore($migration));
                 }
-
                 try {
                     // Migrate!
                     $migration->up();
@@ -103,7 +101,6 @@ class Runner
                     // Show Errors
                     throw $error;
                 }
-
                 if ($dispatcher) {
                     $dispatcher->dispatch(new Event\Migration\UpAfter($migration));
                 }
@@ -122,11 +119,18 @@ class Runner
      */
     public function down(): self
     {
-        $container = $this->getPlanner()->down();
+        $container  = $this->getPlanner()->down();
+        $dispatcher = $this->getEventDispatcher();
 
         foreach ($container as $migration) {
             if ($migration->assert()) {
+                if ($dispatcher) {
+                    $dispatcher->dispatch(new Event\Migration\DownBefore($migration));
+                }
                 $migration->down();
+                if ($dispatcher) {
+                    $dispatcher->dispatch(new Event\Migration\DownAfter($migration));
+                }
             }
         }
 
