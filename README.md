@@ -6,6 +6,7 @@
 </div>
 
 [![Build Status](https://github.com/griffin-php/griffin/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/griffin-php/griffin/actions/workflows/test.yml?query=branch%3Amain)
+[![Latest Stable Version](https://poser.pugx.org/griffin/griffin/v/stable?format=flat)](https://packagist.org/packages/griffin/griffin)
 
 ## Example
 
