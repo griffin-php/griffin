@@ -10,7 +10,7 @@
 [![Codecov](https://codecov.io/gh/griffin-php/griffin/branch/main/graph/badge.svg)](https://codecov.io/gh/griffin-php/griffin)
 [![License](https://poser.pugx.org/griffin/griffin/license?format=flat)](https://packagist.org/packages/griffin/griffin)
 
-## Description
+## Introduction
 
 Migrations are tools to change system current state, adding features based on
 previous state. Generally, they are used to create database structures from
@@ -48,6 +48,12 @@ you don't want to remove `Messages` table because other developer are presenting
 the newest features to Product Owner.
 
 And here comes Griffin.
+
+## Description
+
+Griffin is a migration framework based on directed graphs, where each migration
+can be migrated and rolled back independently. Also, you can define dependencies
+for each migration and Griffin is responsible to plan the execution priority.
 
 ## Example
 
