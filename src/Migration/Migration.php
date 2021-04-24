@@ -76,7 +76,10 @@ class Migration implements MigrationInterface
     public function assert(): bool
     {
         if (! $this->assert) {
-            throw new Exception();
+            throw new Exception(
+                'Unknown Callable: "assert"',
+                Exception::CALLABLE_UNKNOWN,
+            );
         }
 
         return ($this->assert)();
@@ -98,7 +101,10 @@ class Migration implements MigrationInterface
     public function up(): void
     {
         if (! $this->up) {
-            throw new Exception();
+            throw new Exception(
+                'Unknown Callable: "up"',
+                Exception::CALLABLE_UNKNOWN,
+            );
         }
 
         ($this->up)();
@@ -120,7 +126,10 @@ class Migration implements MigrationInterface
     public function down(): void
     {
         if (! $this->down) {
-            throw new Exception();
+            throw new Exception(
+                'Unknown Callable: "down"',
+                Exception::CALLABLE_UNKNOWN,
+            );
         }
 
         ($this->down)();

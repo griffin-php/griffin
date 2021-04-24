@@ -45,6 +45,8 @@ class MigrationDownTest extends TestCase
     public function testWithoutDown(): void
     {
         $this->expectException(Exception::class);
+        $this->expectExceptionCode(Exception::CALLABLE_UNKNOWN);
+        $this->expectExceptionMessage('Unknown Callable: "down"');
 
         $this->migration->down();
     }

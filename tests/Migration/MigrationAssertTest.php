@@ -51,6 +51,8 @@ class MigrationAssertTest extends TestCase
     public function testWithoutAssert(): void
     {
         $this->expectException(Exception::class);
+        $this->expectExceptionCode(Exception::CALLABLE_UNKNOWN);
+        $this->expectExceptionMessage('Unknown Callable: "assert"');
 
         $this->migration->assert();
     }

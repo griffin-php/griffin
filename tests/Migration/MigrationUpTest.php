@@ -45,6 +45,8 @@ class MigrationUpTest extends TestCase
     public function testWithoutUp(): void
     {
         $this->expectException(Exception::class);
+        $this->expectExceptionCode(Exception::CALLABLE_UNKNOWN);
+        $this->expectExceptionMessage('Unknown Callable: "up"');
 
         $this->migration->up();
     }
