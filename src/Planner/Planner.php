@@ -132,7 +132,13 @@ class Planner
 
         foreach ($this->getDependents($name) as $dependent) {
             if ($visited->hasMigration($dependent)) {
-                throw new Exception("Circular Dependency"); // Circular Dependency
+                $path   = $visited->getMigrationNames();
+                $path[] = $dependent;
+
+                throw new Exception(
+                    sprintf('Circular Dependency Found: "%s"', implode(', ', $path)),
+                    Exception::DEPENDENCY_CIRCULAR,
+                );
             }
 
             $this->planDown($visited, $planned, $dependent);

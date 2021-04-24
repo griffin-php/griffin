@@ -92,6 +92,8 @@ class PlannerDownTest extends TestCase
     public function testDownDependenciesCircular(): void
     {
         $this->expectException(Exception::class);
+        $this->expectExceptionCode(Exception::DEPENDENCY_CIRCULAR);
+        $this->expectExceptionMessage('Circular Dependency Found: "A, C, B, A"');
 
         $container = $this->planner->getContainer();
 
@@ -106,6 +108,8 @@ class PlannerDownTest extends TestCase
     public function testDownDependenciesSelf(): void
     {
         $this->expectException(Exception::class);
+        $this->expectExceptionCode(Exception::DEPENDENCY_CIRCULAR);
+        $this->expectExceptionMessage('Circular Dependency Found: "A, A"');
 
         $this->planner->getContainer()
             ->addMigration($this->createMigration('A', ['A']));
