@@ -69,11 +69,12 @@ class Runner
      * Run Migrations Up
      *
      * @return Fluent Interface
+     * @param $names Migration Names
      * @SuppressWarnings(PHPMD.ShortMethodName)
      */
-    public function up(): self
+    public function up(string ...$names): self
     {
-        $container = $this->planner->up();
+        $container = $this->getPlanner()->up(...$names);
 
         foreach ($container as $migration) {
             if (! $migration->assert()) {

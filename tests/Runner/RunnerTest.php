@@ -55,7 +55,7 @@ class RunnerTest extends TestCase
         $this->assertNull($this->runner->getEventDispatcher());
     }
 
-    public function testBasic(): void
+    public function testUpBasic(): void
     {
         $helper    = new Container();
         $container = $this->runner->getPlanner()->getContainer();
@@ -107,5 +107,45 @@ class RunnerTest extends TestCase
             ->up();
 
         $this->assertSame(['BEFORE_B', 'AFTER_B', 'BEFORE_A', 'AFTER_A'], $helper->getArrayCopy());
+    }
+
+    public function testUpNamed(): void
+    {
+        $container = $this->runner->getPlanner()->getContainer();
+
+        $migrationSetX = [
+            $this->createMigration('A', ['C']),
+            $this->createMigration('C'),
+            $this->createMigration('E'),
+        ];
+
+        $migrationSetY = [
+            $this->createMigration('B', ['D']),
+            $this->createMigration('D'),
+        ];
+
+        foreach ($migrationSetX as $migration) {
+            $migration->expects($this->atLeast(1))
+                ->method('assert')
+                ->will($this->returnValue(false));
+
+            $migration->expects($this->once())
+                ->method('up');
+
+            $container->addMigration($migration);
+        }
+
+        foreach ($migrationSetY as $migration) {
+            $migration->expects($this->never())
+                ->method('assert')
+                ->will($this->returnValue(false));
+
+            $migration->expects($this->never())
+                ->method('up');
+
+            $container->addMigration($migration);
+        }
+
+        $this->runner->up('A', 'E');
     }
 }
