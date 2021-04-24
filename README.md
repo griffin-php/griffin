@@ -10,11 +10,11 @@
 [![Codecov](https://codecov.io/gh/griffin-php/griffin/branch/main/graph/badge.svg)](https://codecov.io/gh/griffin-php/griffin)
 [![License](https://poser.pugx.org/griffin/griffin/license?format=flat)](https://packagist.org/packages/griffin/griffin)
 
-## tl;dr
+## TL;DR
 
 Griffin is a generic migration framework that uses graph theory to provision
-anything. It plans your execution based on migration dependencies and runs them
-in the correct order.
+anything. It plans execution based on migration dependencies and runs them in
+the correct order.
 
 ```php
 use FooBar\Database\Driver;
@@ -170,8 +170,11 @@ class Item implements MigrationInterface
 }
 ```
 
+You can create objects from class `Griffin\Migration\Migration`, where values
+can be defined with immutable methods and callables.
+
 ```php
-use Database\Driver;
+use FooBar\Database\Driver;
 use Griffin\Migration\Migration;
 
 $driver = new Driver();
