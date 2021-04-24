@@ -70,11 +70,12 @@ class Runner
     /**
      * Run Migrations Up
      *
+     * @param  $depth    Recursion Depth
      * @param  $names    Migration Names
      * @throws Throwable Migration Error
      * @return Fluent Interface
      */
-    protected function runUp(string ...$names): self
+    protected function runUp(int $depth, string ...$names): self
     {
         $visited    = new Container();
         $container  = $this->getPlanner()->up(...$names);
@@ -91,8 +92,16 @@ class Runner
                     // Done!
                     $visited->addMigration($migration);
                 } catch (Throwable $error) {
+                    // Looping?
+                    if ($depth === 2) {
+                        throw new Exception(
+                            sprintf('Circular Rollback Found'),
+                            Exception::ROLLBACK_CIRCULAR,
+                            $error,
+                        );
+                    }
                     // Error Found
-                    $this->runDown(...$visited->getMigrationNames());
+                    $this->runDown(++$depth, ...$visited->getMigrationNames());
                     // Show Errors
                     throw $error;
                 }
@@ -115,17 +124,18 @@ class Runner
      */
     public function up(string ...$names): self
     {
-        return $this->runUp(...$names);
+        return $this->runUp(0, ...$names);
     }
 
     /**
      * Run Migrations Down
      *
+     * @param  $depth    Recursion Depth
      * @param  $names    Migration Names
      * @throws Throwable Migration Error
      * @return Fluent Interface
      */
-    protected function runDown(string ...$names): self
+    protected function runDown(int $depth, string ...$names): self
     {
         $visited    = new Container();
         $container  = $this->getPlanner()->down(...$names);
@@ -142,8 +152,16 @@ class Runner
                     // Done!
                     $visited->addMigration($migration);
                 } catch (Throwable $error) {
+                    // Looping?
+                    if ($depth === 2) {
+                        throw new Exception(
+                            sprintf('Circular Rollback Found'),
+                            Exception::ROLLBACK_CIRCULAR,
+                            $error,
+                        );
+                    }
                     // Error Found
-                    $this->runUp(...$visited->getMigrationNames());
+                    $this->runUp(++$depth, ...$visited->getMigrationNames());
                     // Show Errors
                     throw $error;
                 }
@@ -165,6 +183,6 @@ class Runner
      */
     public function down(string ...$names): self
     {
-        return $this->runDown(...$names);
+        return $this->runDown(0, ...$names);
     }
 }

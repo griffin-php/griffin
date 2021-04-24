@@ -10,6 +10,7 @@ use Griffin\Event;
 use Griffin\Migration\Container;
 use Griffin\Migration\MigrationInterface;
 use Griffin\Planner\Planner;
+use Griffin\Runner\Exception;
 use Griffin\Runner\Runner;
 use League\Event\EventDispatcher;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -335,10 +336,9 @@ class RunnerTest extends TestCase
 
     public function testUpDownLoopingRollback(): void
     {
-        // TODO Up Exception on C
-        $this->expectException(BaseException::class);
-        $this->expectExceptionCode(321);
-        $this->expectExceptionMessage('Down Error on A');
+        $this->expectException(Exception::class);
+        $this->expectExceptionCode(Exception::ROLLBACK_CIRCULAR);
+        $this->expectExceptionMessage('Circular Rollback Found');
 
         $container = $this->runner->getPlanner()->getContainer();
 
@@ -375,7 +375,7 @@ class RunnerTest extends TestCase
         }
 
         $migrationC->method('up')
-            ->will($this->throwException(new BaseException('Up Exception on C', 123)));
+            ->will($this->throwException(new BaseException('Up Error on C', 123)));
 
         $migrationA->method('down')
             ->will($this->throwException(new BaseException('Down Error on A', 321)));

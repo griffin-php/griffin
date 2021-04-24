@@ -8,4 +8,5 @@ use Exception as BaseException;
 
 class Exception extends BaseException
 {
+    const ROLLBACK_CIRCULAR = 1;
 }
