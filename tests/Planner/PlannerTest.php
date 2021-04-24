@@ -82,16 +82,16 @@ class PlannerTest extends TestCase
 
         $migrations = [
             $this->createMigration('A'),
-            $this->createMigration('B', ['A', 'C']),
-            $this->createMigration('C', ['D']),
-            $this->createMigration('D'),
+            $this->createMigration('B', ['D']),
+            $this->createMigration('C', ['B']),
+            $this->createMigration('D', ['A']),
         ];
 
         foreach ($migrations as $migration) {
             $container->addMigration($migration);
         }
 
-        $this->assertSame(['A', 'D', 'C', 'B'], $this->planner->up()->getMigrationNames());
+        $this->assertSame(['A', 'D', 'B', 'C'], $this->planner->up()->getMigrationNames());
     }
 
     public function testUpDependenciesCircular(): void
@@ -186,5 +186,23 @@ class PlannerTest extends TestCase
             ->addMigration($migrationB);
 
         $this->assertSame(['B', 'A'], $this->planner->down()->getMigrationNames());
+    }
+
+    public function testDownDependenciesDeep(): void
+    {
+        $container = $this->planner->getContainer();
+
+        $migrations = [
+            $this->createMigration('A'),
+            $this->createMigration('B', ['D']),
+            $this->createMigration('C', ['B']),
+            $this->createMigration('D', ['A']),
+        ];
+
+        foreach ($migrations as $migration) {
+            $container->addMigration($migration);
+        }
+
+        $this->assertSame(['C', 'B', 'D', 'A'], $this->planner->down()->getMigrationNames());
     }
 }

@@ -39,6 +39,7 @@ class Planner
     /**
      * Plan Up Migration Execution by Name Recursively
      *
+     * @param  $visited Migrations Already Visited
      * @param  $planned Migrations Already Planned
      * @param  $name    Current Migration Name
      * @return Fluent Interface
@@ -87,19 +88,62 @@ class Planner
     }
 
     /**
+     * Get Dependents by Migration Name
+     *
+     * @param string $name Migration Name
+     * @return string[] Expected Values
+     */
+    protected function getDependents(string $name): array
+    {
+        $dependents = [];
+
+        foreach ($this->container as $migration) {
+            $dependencies = $migration->getDependencies();
+
+            if (false !== array_search($name, $dependencies)) {
+                array_push($dependents, $migration->getName());
+            }
+        }
+
+        return $dependents;
+    }
+
+    /**
+     * Plan Down Migration Execution by Name Recursively
+     *
+     * @param  $visited Migrations Already Visited
+     * @param  $planned Migrations Already Planned
+     * @param  $name    Current Migration Name
+     * @return Fluent Interface
+     */
+    protected function planDown(Container $planned, string $name): self
+    {
+        $migration = $this->container->getMigration($name);
+
+        foreach ($this->getDependents($name) as $dependent) {
+            $this->planDown($planned, $dependent);
+        }
+
+        if (! $planned->hasMigration($name)) {
+            $planned->addMigration($migration);
+        }
+
+        return $this;
+    }
+
+    /**
      * Plan Down Migration Execution
      *
      * @return Migration Container in Sequence
      */
     public function down(): Container
     {
+        $names = $this->getContainer()->getMigrationNames();
+
         $planned = new Container();
 
-        $names = $this->getContainer()->getMigrationNames();
-        $names = array_reverse($names); // TODO Fix
-
         foreach ($names as $name) {
-            $planned->addMigration($this->getContainer()->getMigration($name));
+            $this->planDown($planned, $name);
         }
 
         return $planned;
