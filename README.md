@@ -31,6 +31,12 @@ But if you want to execute migrations `A` and `C`, because they are dependent,
 and ignore `B` for some reason, you can't. Even, if you want to rollback `C` and
 `A` ignoring `B`, you are locked.
 
+Bringing to the world of database migrations, you can create migration `Orders`
+that create table into schema. Right after that, other developer create a
+migration called `Messages` without any dependency from `Orders`. Next, you
+create a migration named `Items` with a foreign key to `Orders`. Everything
+works fine and you deploy them to *stage* environment on friday.
+
 ## Example
 
 ```php
