@@ -117,9 +117,9 @@ class Runner
      * @param $names Migration Names
      * @return Fluent Interface
      */
-    public function down(): self
+    public function down(string ...$names): self
     {
-        $container  = $this->getPlanner()->down();
+        $container  = $this->getPlanner()->down(...$names);
         $dispatcher = $this->getEventDispatcher();
 
         foreach ($container as $migration) {

@@ -251,4 +251,44 @@ class RunnerTest extends TestCase
 
         $this->assertSame(['BEFORE_A', 'AFTER_A', 'BEFORE_B', 'AFTER_B'], $helper->getArrayCopy());
     }
+
+    public function testDownNamed(): void
+    {
+        $container = $this->runner->getPlanner()->getContainer();
+
+        $migrationSetX = [
+            $this->createMigration('A', ['C']),
+            $this->createMigration('C'),
+            $this->createMigration('E'),
+        ];
+
+        $migrationSetY = [
+            $this->createMigration('B', ['D']),
+            $this->createMigration('D'),
+        ];
+
+        foreach ($migrationSetX as $migration) {
+            $migration->expects($this->atLeast(1))
+                ->method('assert')
+                ->will($this->returnValue(true));
+
+            $migration->expects($this->once())
+                ->method('down');
+
+            $container->addMigration($migration);
+        }
+
+        foreach ($migrationSetY as $migration) {
+            $migration->expects($this->never())
+                ->method('assert')
+                ->will($this->returnValue(true));
+
+            $migration->expects($this->never())
+                ->method('down');
+
+            $container->addMigration($migration);
+        }
+
+        $this->runner->down('C', 'E');
+    }
 }
