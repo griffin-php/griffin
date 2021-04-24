@@ -10,6 +10,42 @@
 [![Codecov](https://codecov.io/gh/griffin-php/griffin/branch/main/graph/badge.svg)](https://codecov.io/gh/griffin-php/griffin)
 [![License](https://poser.pugx.org/griffin/griffin/license?format=flat)](https://packagist.org/packages/griffin/griffin)
 
+## tl;dr
+
+Griffin is a generic migration framework that uses graph theory to provision
+anything. It plans your execution based on migration dependencies and runs them
+in the correct order.
+
+```php
+use FooBar\Database\Driver;
+use Griffin\Migration\Container;
+use Griffin\Migration\Migration;
+use Griffin\Planner\Planner;
+use Griffin\Runner\Runner;
+
+$orders = (new Migration())
+    ->withName('orders')
+    ->withAssert(fn() => $driver->table->has('orders'))
+    ->withUp(fn() => $driver->table->create('orders'))
+    ->withDown(fn() => $driver->table->drop('orders'));
+
+$items = (new Migration())
+    ->withName('items')
+    ->withAssert(fn() => $driver->table->has('items'))
+    ->withUp(fn() => $driver->table->create('items'))
+    ->withDown(fn() => $driver->table->drop('items'));
+
+$container = (new Container())
+    ->addMigration($orders)
+    ->addMigration($items);
+
+$planner = new Planner($container);
+$runner  = new Runner($planner);
+
+$runner->up('items'); // create orders and items
+$runner->down('orders'); // destroy orders and items
+```
+
 ## Introduction
 
 Migrations are tools to change system current state, adding features based on
