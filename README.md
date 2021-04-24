@@ -200,7 +200,8 @@ use Griffin\Migration\Exception as MigrationException;
 use Griffin\Planner\Exception as PlannerException;
 use Griffin\Planner\Planner;
 
-$planner = new Planner(new Container());
+$container = new Container();
+$planner   = new Planner($container);
 
 $planner->getContainer()
     ->addMigration(new Migration\Orders())
@@ -249,8 +250,9 @@ use Griffin\Planner\Planner;
 use Griffin\Runner\Exception as RunnerException;
 use Griffin\Runner\Runner;
 
-$planner = new Planner(new Container());
-$runner  = new Runner($planner);
+$container = new Container();
+$planner   = new Planner($container);
+$runner    = new Runner($planner);
 
 try {
     // run up for everything
@@ -282,10 +284,12 @@ will try to recreate resources.
 
 ### Event Dispatcher
 
+Lastly, Griffin implements PSR-14 Event Dispatcher and triggers events after and
+before migrations up and down. You can use it to create a logger, as example.
+
 ```php
-use Database\Migration\Table\Item as ItemTableMigration;
-use Griffin\Event\Migration\UpAfter;
-use Griffin\Event\Migration\UpBefore;
+use FooBar\Database\Migration;
+use Griffin\Event;
 use Griffin\Migration\Container;
 use Griffin\Planner\Planner;
 use Griffin\Runner\Runner;
@@ -300,17 +304,23 @@ $logger = fn($event)
 
 $dispatcher = new EventDispatcher(); // PSR-14
 
-$dispatcher->subscribeTo(UpBefore::class, $logger);
-$dispatcher->subscribeTo(UpAfter::class, $logger);
+$dispatcher->subscribeTo(Event\Migration\UpBefore::class, $logger);
+$dispatcher->subscribeTo(Event\Migration\UpAfter::class, $logger);
+
+$dispatcher->subscribeTo(Event\Migration\DownBefore::class, $logger);
+$dispatcher->subscribeTo(Event\Migration\DownAfter::class, $logger);
 
 $runner
     ->setEventDispatcher($dispatcher)
-    ->addMigration(new ItemTableMigration());
+    ->addMigration(new Migration\Orders());
 
 $runner->up();
+$runner->down();
 
 // Griffin\Event\Migration\UpBefore::Database\Migration\Table\Item
 // Griffin\Event\Migration\UpAfter::Database\Migration\Table\Item
+// Griffin\Event\Migration\DownBefore::Database\Migration\Table\Item
+// Griffin\Event\Migration\DownAfter::Database\Migration\Table\Item
 ```
 
 ## License
