@@ -187,6 +187,32 @@ $migration = (new Migration())
     ->withDown(fn() => $driver->dropTable('items'));
 ```
 
+### Planning
+
+Griffin plans your migrations execution before running them using
+`Griffin\Planner\Planner`. Every migration must be added to
+`Griffin\Migration\Container` instances and attached to planner on construction.
+
+```php
+use FooBar\Database\Migration;
+use Griffin\Migration\Container;
+use Griffin\Planner\Planner;
+
+$planner = new Planner(new Container());
+
+$planner->getContainer()
+    ->addMigration(new Migration\Orders())
+    ->addMigration(new Migration\Items())
+    ->addMigration(new Migration\Products());
+
+/** @var Container $migrations **/
+
+// plan execution for every migration
+$migrations = $planner->up();
+// plan execution for Orders and Items
+$migrations = $planner->up(Migration\Items::class)
+```
+
 ```php
 use Database\Migration\Table as TableMigration;
 use Griffin\Migration\Container;
