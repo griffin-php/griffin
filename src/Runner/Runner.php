@@ -119,6 +119,7 @@ class Runner
      */
     public function down(string ...$names): self
     {
+        $visited    = new Container();
         $container  = $this->getPlanner()->down(...$names);
         $dispatcher = $this->getEventDispatcher();
 
@@ -127,7 +128,22 @@ class Runner
                 if ($dispatcher) {
                     $dispatcher->dispatch(new Event\Migration\DownBefore($migration));
                 }
-                $migration->down();
+                try {
+                    // Migrate!
+                    $migration->down();
+                    // Done!
+                    $visited->addMigration($migration);
+                } catch (Throwable $error) {
+                    // Error Found
+                    foreach ($visited as $migration) {
+                        if (! $migration->assert()) {
+                            // Rollback
+                            $migration->up(); // TODO $this->up();
+                        }
+                    }
+                    // Show Errors
+                    throw $error;
+                }
                 if ($dispatcher) {
                     $dispatcher->dispatch(new Event\Migration\DownAfter($migration));
                 }

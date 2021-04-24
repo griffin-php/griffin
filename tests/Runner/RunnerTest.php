@@ -291,4 +291,43 @@ class RunnerTest extends TestCase
 
         $this->runner->down('C', 'E');
     }
+
+    public function testDownRollback(): void
+    {
+        $this->expectException(BaseException::class);
+        $this->expectExceptionCode(321);
+        $this->expectExceptionMessage('!spO');
+
+        $container = $this->runner->getPlanner()->getContainer();
+
+        $migrationA = $this->createMigration('A', ['B']);
+        $migrationB = $this->createMigration('B', ['C']);
+        $migrationC = $this->createMigration('C');
+
+        foreach ([$migrationA, $migrationB] as $migration) {
+            $migration->expects($this->exactly(2))
+                ->method('assert')
+                ->will($this->onConsecutiveCalls(true, false));
+
+            $migration->expects($this->once())
+                ->method('down');
+
+            $migration->expects($this->once())
+                ->method('up');
+
+            $container->addMigration($migration);
+        }
+
+        $migrationC->expects($this->once())
+            ->method('assert')
+            ->will($this->returnValue(true));
+
+        $migrationC->expects($this->once())
+            ->method('down')
+            ->will($this->throwException(new BaseException('!spO', 321)));
+
+        $container->addMigration($migrationC);
+
+        $this->runner->down();
+    }
 }
