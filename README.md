@@ -224,10 +224,13 @@ try {
 ```
 
 You can add migrations to container in any order, because dependencies are
-checked on planning stage. This stage is responsible to check circular
-dependencies, where `A` migration depends of `B` and `B` depends of `A`. This
-type of dependencies are not allowed and will rise `Exceptions` describing the
-problem.
+checked on planning stage. Migration names are unique and must not be
+duplicated. Using objects from `Griffin\Migration\Migration` immutable class can
+throw errors if callables were not defined.
+
+This stage also search for circular dependencies, where `A` depends of `B` and
+`B` depends of `A`. This type of requirement is not allowed and will rise a
+exception describing the problem.
 
 ```php
 use Database\Migration\Table as TableMigration;
