@@ -326,6 +326,12 @@ $runner->down();
 // Griffin\Event\Migration\DownAfter::Database\Migration\Table\Item
 ```
 
+## References
+
+* Wikipedia: [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory)
+* Wikipedia: [Path on Graph Theory](https://en.wikipedia.org/wiki/Path_%28graph_theory%29)
+* Wikipedia: [Schema Migration](https://en.wikipedia.org/wiki/Schema_migration)
+
 ## License
 
 This package is opensource and available under MIT license described in
