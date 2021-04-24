@@ -210,10 +210,12 @@ $planner->getContainer()
 /** @var Container $migrations **/
 
 try {
-    // plan execution for every migration
+    // plan up execution for every migration
     $migrations = $planner->up();
-    // plan execution for Orders and Items
+    // plan up execution for Orders and Items
     $migrations = $planner->up(Migration\Items::class)
+    // plan down execution
+    $migrations = $planner->down();
 } catch (PlannerException $e) {
     // PlannerException::DEPENDENCY_CIRCULAR (Circular Dependency Found)
 } catch (MigrationException $e) {
@@ -232,35 +234,43 @@ This stage also search for circular dependencies, where `A` depends of `B` and
 `B` depends of `A`. This type of requirement is not allowed and will rise a
 exception describing the problem.
 
+### Running
+
+After planning, Griffin runs migration using `Griffin\Runner\Runner` class.
+Internally, Griffin plans migrations execution first and after that it will
+execute running on second stage.
+
 ```php
-use Database\Migration\Table as TableMigration;
+use FooBar\Database\Migration;
 use Griffin\Migration\Container;
+use Griffin\Migration\Exception as MigrationException;
+use Griffin\Planner\Exception as PlannerException;
 use Griffin\Planner\Planner;
+use Griffin\Runner\Exception as RunnerException;
 use Griffin\Runner\Runner;
 
-$container = (new Container())
-    ->addMigration(new TableMigration\Item())
-    ->addMigration(new TableMigration\Order())
-    ->addMigration(new TableMigration\Product());
-
-$planner = new Planner($container);
+$planner = new Planner(new Container());
 $runner  = new Runner($planner);
 
-$runner->up(); // creates everything
-$runner->down(); // destroys everthing
-
-// creates orders and products only
-$runner->up(
-    TableMigration\Order::class,
-    TableMigration\Product::class,
-);
-
-// creates items (orders and products added)
-$runner->up(TableMigration\Item::class);
-
-// destroys items and orders (and not products)
-$runner->down(TableMigration\Order::class);
+try {
+    // run up for everything
+    $runner->up();
+    // run up for Orders and Items
+    $runner->up(Migration\Items::class)
+    // run complete down
+    $runner->down();
+} catch (RunnerException $e) {
+    // RunnerException::ROLLBACK_CIRCULAR (Circular Rollback Found)
+} catch (PlannerException $e) {
+    // PlannerException::DEPENDENCY_CIRCULAR (Circular Dependency Found)
+} catch (MigrationException $e) {
+    // MigrationException::NAME_UNKNOWN (Unknown Migration Name)
+    // MigrationException::NAME_DUPLICATED (Duplicated Migration Name)
+    // MigrationException::CALLABLE_UNKNOWN (Unknown Callable Function)
+}
 ```
+
+### Event Dispatcher
 
 ```php
 use Database\Migration\Table\Item as ItemTableMigration;
