@@ -108,6 +108,8 @@ class PlannerUpTest extends TestCase
     public function testUpDependenciesSelf(): void
     {
         $this->expectException(Exception::class);
+        $this->expectExceptionCode(Exception::DEPENDENCY_CIRCULAR);
+        $this->expectExceptionMessage('Circular Dependency Found: "A, A"');
 
         $this->planner->getContainer()
             ->addMigration($this->createMigration('A', ['A']));
