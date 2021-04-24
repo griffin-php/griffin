@@ -142,11 +142,14 @@ class Planner
     /**
      * Plan Down Migration Execution
      *
+     * @param $names Migration Names
      * @return Migration Container in Sequence
      */
-    public function down(): Container
+    public function down(string ...$names): Container
     {
-        $names = $this->getContainer()->getMigrationNames();
+        if (func_num_args() === 0) {
+            $names = $this->getContainer()->getMigrationNames();
+        }
 
         $planned = new Container();
 

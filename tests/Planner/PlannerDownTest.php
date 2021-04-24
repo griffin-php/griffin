@@ -122,4 +122,23 @@ class PlannerDownTest extends TestCase
 
         $this->planner->down();
     }
+
+    public function testDownNamed(): void
+    {
+        $container = $this->planner->getContainer();
+
+        $container
+            ->addMigration($this->createMigration('A'))
+            ->addMigration($this->createMigration('B'))
+            ->addMigration($this->createMigration('C', ['D']))
+            ->addMigration($this->createMigration('D'));
+
+        $migrations = $this->planner->down('A', 'D')->getMigrationNames();
+
+        $this->assertCount(3, $migrations);
+        $this->assertContains('A', $migrations);
+        $this->assertNotContains('B', $migrations);
+        $this->assertContains('C', $migrations);
+        $this->assertContains('D', $migrations);
+    }
 }

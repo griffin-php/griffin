@@ -127,23 +127,18 @@ class PlannerUpTest extends TestCase
     {
         $container = $this->planner->getContainer();
 
-        $migrationA = $this->createMigration('A');
-        $migrationB = $this->createMigration('B');
-        $migrationC = $this->createMigration('C', ['D']);
-        $migrationD = $this->createMigration('D');
-
         $container
-            ->addMigration($migrationA)
-            ->addMigration($migrationB)
-            ->addMigration($migrationC)
-            ->addMigration($migrationD);
+            ->addMigration($this->createMigration('A'))
+            ->addMigration($this->createMigration('B'))
+            ->addMigration($this->createMigration('C', ['D']))
+            ->addMigration($this->createMigration('D'));
 
-        $migrations = $this->planner->up('A', 'C');
+        $migrations = $this->planner->up('A', 'C')->getMigrationNames();
 
         $this->assertCount(3, $migrations);
-        $this->assertContains($migrationA, $migrations);
-        $this->assertNotContains($migrationB, $migrations);
-        $this->assertContains($migrationC, $migrations);
-        $this->assertContains($migrationD, $migrations);
+        $this->assertContains('A', $migrations);
+        $this->assertNotContains('B', $migrations);
+        $this->assertContains('C', $migrations);
+        $this->assertContains('D', $migrations);
     }
 }
