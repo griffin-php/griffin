@@ -101,4 +101,14 @@ class PlannerDownTest extends TestCase
 
         $this->planner->down();
     }
+
+    public function testDownDependenciesSelf(): void
+    {
+        $this->expectException(Exception::class);
+
+        $this->planner->getContainer()
+            ->addMigration($this->createMigration('A', ['A']));
+
+        $this->planner->down();
+    }
 }
