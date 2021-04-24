@@ -10,6 +10,12 @@
 [![Codecov](https://codecov.io/gh/griffin-php/griffin/branch/main/graph/badge.svg)](https://codecov.io/gh/griffin-php/griffin)
 [![License](https://poser.pugx.org/griffin/griffin/license?format=flat)](https://packagist.org/packages/griffin/griffin)
 
+## Description
+
+Migrations are tools to change system current state, adding features based on
+previous state. Generally, they are used to create database structures from
+scratch, provisioning tables or columns used a step-by-step approach.
+
 ## Example
 
 ```php
