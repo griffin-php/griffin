@@ -35,7 +35,7 @@ class PlannerDownTest extends TestCase
         return $migration;
     }
 
-    public function testDownBasic(): void
+    public function testBasic(): void
     {
         $container = $this->planner->getContainer();
 
@@ -57,7 +57,7 @@ class PlannerDownTest extends TestCase
         $this->assertContains($migrationB, $migrations);
     }
 
-    public function testDownDependencies(): void
+    public function testDependencies(): void
     {
         $container = $this->planner->getContainer();
 
@@ -71,7 +71,7 @@ class PlannerDownTest extends TestCase
         $this->assertSame(['B', 'A'], $this->planner->down()->getMigrationNames());
     }
 
-    public function testDownDependenciesDeep(): void
+    public function testDependenciesDeep(): void
     {
         $container = $this->planner->getContainer();
 
@@ -89,7 +89,7 @@ class PlannerDownTest extends TestCase
         $this->assertSame(['C', 'B', 'D', 'A'], $this->planner->down()->getMigrationNames());
     }
 
-    public function testDownDependenciesCircular(): void
+    public function testDependenciesCircular(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionCode(Exception::DEPENDENCY_CIRCULAR);
@@ -105,7 +105,7 @@ class PlannerDownTest extends TestCase
         $this->planner->down();
     }
 
-    public function testDownDependenciesSelf(): void
+    public function testDependenciesSelf(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionCode(Exception::DEPENDENCY_CIRCULAR);
@@ -117,7 +117,7 @@ class PlannerDownTest extends TestCase
         $this->planner->down();
     }
 
-    public function testDownDependencyUnknown(): void
+    public function testDependencyUnknown(): void
     {
         $this->expectException(MigrationException::class);
         $this->expectExceptionCode(MigrationException::UNKNOWN);
@@ -129,7 +129,7 @@ class PlannerDownTest extends TestCase
         $this->planner->down();
     }
 
-    public function testDownNamed(): void
+    public function testNamed(): void
     {
         $container = $this->planner->getContainer();
 

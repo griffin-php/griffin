@@ -35,7 +35,7 @@ class PlannerUpTest extends TestCase
         return $migration;
     }
 
-    public function testUpBasic(): void
+    public function testBasic(): void
     {
         $container = $this->planner->getContainer();
 
@@ -57,7 +57,7 @@ class PlannerUpTest extends TestCase
         $this->assertContains($migrationB, $migrations);
     }
 
-    public function testUpDependencies(): void
+    public function testDependencies(): void
     {
         $container = $this->planner->getContainer();
 
@@ -71,7 +71,7 @@ class PlannerUpTest extends TestCase
         $this->assertSame(['B', 'A'], $this->planner->up()->getMigrationNames());
     }
 
-    public function testUpDependenciesDeep(): void
+    public function testDependenciesDeep(): void
     {
         $container = $this->planner->getContainer();
 
@@ -89,7 +89,7 @@ class PlannerUpTest extends TestCase
         $this->assertSame(['A', 'D', 'B', 'C'], $this->planner->up()->getMigrationNames());
     }
 
-    public function testUpDependenciesCircular(): void
+    public function testDependenciesCircular(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionCode(Exception::DEPENDENCY_CIRCULAR);
@@ -105,7 +105,7 @@ class PlannerUpTest extends TestCase
         $this->planner->up();
     }
 
-    public function testUpDependenciesSelf(): void
+    public function testDependenciesSelf(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionCode(Exception::DEPENDENCY_CIRCULAR);
@@ -117,7 +117,7 @@ class PlannerUpTest extends TestCase
         $this->planner->up();
     }
 
-    public function testUpDependencyUnknown(): void
+    public function testDependencyUnknown(): void
     {
         $this->expectException(MigrationException::class);
         $this->expectExceptionCode(MigrationException::UNKNOWN);
@@ -129,7 +129,7 @@ class PlannerUpTest extends TestCase
         $this->planner->up();
     }
 
-    public function testUpNamed(): void
+    public function testNamed(): void
     {
         $container = $this->planner->getContainer();
 
