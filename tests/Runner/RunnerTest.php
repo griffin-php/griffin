@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace GriffinTest\Runner;
 
-use Exception as BaseException;
 use League\Event\EventDispatcher;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 class RunnerTest extends TestCase
 {

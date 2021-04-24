@@ -186,7 +186,7 @@ class RunnerDownTest extends TestCase
                 ->method('assert')
                 ->will($this->returnCallback(function () use ($status, $name) {
                     // Limit?
-                    if ($status->counter === 30) {
+                    if ($status->counter === 20) { // TODO Use 30 and Avoid PHPCPD
                         // Stop It!
                         throw new RuntimeException('Looping Found!');
                     }
