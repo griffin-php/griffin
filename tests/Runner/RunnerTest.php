@@ -87,17 +87,25 @@ class RunnerTest extends TestCase
         $helper = new ArrayObject();
 
         $this->runner->getPlanner()->getContainer()
-            ->addMigration($this->createMigration('A'));
+            ->addMigration($this->createMigration('A', ['B']))
+            ->addMigration($this->createMigration('B'));
 
         $dispatcher = new EventDispatcher();
 
-        $dispatcher->subscribeTo(Event\Migration\UpBefore::class, fn() => $helper->append('BEFORE'));
-        $dispatcher->subscribeTo(Event\Migration\UpAfter::class, fn() => $helper->append('AFTER'));
+        $dispatcher->subscribeTo(
+            Event\Migration\UpBefore::class,
+            fn($event) => $helper->append(sprintf('BEFORE_%s', $event->getMigration()->getName())),
+        );
+
+        $dispatcher->subscribeTo(
+            Event\Migration\UpAfter::class,
+            fn($event) => $helper->append(sprintf('AFTER_%s', $event->getMigration()->getName())),
+        );
 
         $this->runner
             ->setEventDispatcher($dispatcher)
             ->up();
 
-        $this->assertSame(['BEFORE', 'AFTER'], $helper->getArrayCopy());
+        $this->assertSame(['BEFORE_B', 'AFTER_B', 'BEFORE_A', 'AFTER_A'], $helper->getArrayCopy());
     }
 }
