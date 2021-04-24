@@ -5,6 +5,7 @@
   <p align="center"><b>WORK IN PROGRESS</b> Griffin is a Graph-Oriented Migration Framework for PHP</div>
 </div>
 
+[![Build Status](https://github.com/griffin-php/griffin/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/griffin-php/griffin/actions/workflows/test.yml?query=branch%3Amain)
 
 ## Example
 
