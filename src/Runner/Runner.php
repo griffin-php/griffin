@@ -35,4 +35,23 @@ class Runner
     {
         return $this->planner;
     }
+
+    /**
+     * Run Migrations Up
+     *
+     * @return Fluent Interface
+     * @SuppressWarnings(PHPMD.ShortMethodName)
+     */
+    public function up(): self
+    {
+        $container = $this->planner->up();
+
+        foreach ($container as $migration) {
+            if (! $migration->assert()) {
+                $migration->up();
+            }
+        }
+
+        return $this;
+    }
 }
