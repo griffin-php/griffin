@@ -57,18 +57,21 @@ $migration = (new Migration())
     ->withAssert(fn() => $driver->hasTable('items'))
     ->withUp(fn() => $driver->createTable('items'))
     ->withDown(fn() => $driver->dropTable('items'));
-
-$griffin->addMigration($migration);
 ```
 
 ```php
 use Database\Migration\Table as TableMigration;
+use Griffin\Migration\Container;
+use Griffin\Planner\Planner;
 use Griffin\Runner\Runner;
 
-$runner = (new Runner())
+$container = (new Container())
     ->addMigration(new TableMigration\Item())
     ->addMigration(new TableMigration\Order())
     ->addMigration(new TableMigration\Product());
+
+$planner = new Planner($container);
+$runner  = new Runner($planner);
 
 $runner->up(); // creates everything
 $runner->down(); // destroys everthing
@@ -90,10 +93,14 @@ $runner->down(TableMigration\Order::class);
 use Database\Migration\Table\Item as ItemTableMigration;
 use Griffin\Event\Migration\UpAfter;
 use Griffin\Event\Migration\UpBefore;
+use Griffin\Migration\Container;
+use Griffin\Planner\Planner;
 use Griffin\Runner\Runner;
 use League\Event\EventDispatcher;
 
-$runner = new Runner();
+$container = new Container();
+$planner   = new Planner($container);
+$runner    = new Runner($planner);
 
 $logger = fn($event)
     => printf("%s::%s\n", get_class($event), get_class($event->getMigration()));
