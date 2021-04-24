@@ -8,8 +8,10 @@ use ArrayObject;
 use Exception as BaseException;
 use Griffin\Event;
 use Griffin\Migration\Container;
+use Griffin\Runner\Exception;
 use League\Event\EventDispatcher;
 use PHPUnit\Framework\TestCase;
+use StdClass;
 
 class RunnerDownTest extends TestCase
 {
@@ -153,6 +155,55 @@ class RunnerDownTest extends TestCase
             ->will($this->throwException(new BaseException('!spO', 321)));
 
         $container->addMigration($migrationC);
+
+        $this->runner->down();
+    }
+
+    public function testDownUpDownLoopingRollback(): void
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionCode(Exception::ROLLBACK_CIRCULAR);
+        $this->expectExceptionMessage('Circular Rollback Found');
+
+        $container = $this->runner->getPlanner()->getContainer();
+
+        $migrationA = $this->createMigration('A');
+        $migrationB = $this->createMigration('B', ['A']);
+        $migrationC = $this->createMigration('C', ['B']);
+
+        $status = new StdClass();
+
+        $status->A = true;
+        $status->B = true;
+        $status->C = true;
+
+        $status->counter = 0;
+
+        foreach ([$migrationA, $migrationB, $migrationC] as $migration) {
+            $name = $migration->getName();
+
+            $migration
+                ->method('assert')
+                ->will($this->returnCallback(function () use ($status, $name) {
+                    // Limit?
+                    if ($status->counter === 30) {
+                        // Stop It!
+                        throw new RuntimeException('Looping Found!');
+                    }
+                    // Next Step
+                    $status->counter++;
+
+                    return ! $status->$name = ! $status->$name;
+                }));
+
+            $container->addMigration($migration);
+        }
+
+        $migrationC->method('up')
+            ->will($this->throwException(new BaseException('Up Error on C', 123)));
+
+        $migrationA->method('down')
+            ->will($this->throwException(new BaseException('Down Error on A', 321)));
 
         $this->runner->down();
     }
