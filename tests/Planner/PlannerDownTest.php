@@ -116,6 +116,8 @@ class PlannerDownTest extends TestCase
     public function testDownDependencyUnknown(): void
     {
         $this->expectException(MigrationException::class);
+        $this->expectExceptionCode(MigrationException::UNKNOWN);
+        $this->expectExceptionMessage('Unknown Migration Name: "B"');
 
         $this->planner->getContainer()
             ->addMigration($this->createMigration('A', ['B']));
