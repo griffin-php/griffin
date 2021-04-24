@@ -55,6 +55,12 @@ Griffin is a migration framework based on directed graphs, where each migration
 can be migrated and rolled back independently. Also, you can define dependencies
 for each migration and Griffin is responsible to plan the execution priority.
 
+Based on provisioning tools like Puppet and Terraform, Griffin can plan
+execution and run it using graph theory, where each migration works like a
+vertice and dependencies define directed paths. Griffin searches for circular
+dependencies on planning and can automatically rollback changes if some
+migration found errors during its execution.
+
 ## Example
 
 ```php
