@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Griffin\Runner;
 
+use Griffin\Event;
 use Griffin\Planner\Planner;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
@@ -76,7 +77,17 @@ class Runner
 
         foreach ($container as $migration) {
             if (! $migration->assert()) {
+                $dispatcher = $this->getEventDispatcher();
+
+                if ($dispatcher) {
+                    $dispatcher->dispatch(new Event\Migration\UpBefore($migration));
+                }
+
                 $migration->up();
+
+                if ($dispatcher) {
+                    $dispatcher->dispatch(new Event\Migration\UpAfter($migration));
+                }
             }
         }
 

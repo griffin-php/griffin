@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace GriffinTest\Runner;
 
+use Griffin\Event\Migration\UpAfter as EventMigrationUpAfter;
 use Griffin\Migration\Container;
 use Griffin\Migration\MigrationInterface;
 use Griffin\Planner\Planner;
@@ -55,10 +56,20 @@ class RunnerTest extends TestCase
 
     public function testBasic(): void
     {
+        $helper     = new Container();
+        $dispatcher = new EventDispatcher();
+
+        $dispatcher->subscribeTo(
+            EventMigrationUpAfter::class,
+            fn($event) => $helper->addMigration($event->getMigration()),
+        );
+
+        $this->runner->setEventDispatcher($dispatcher);
+
         $container = $this->runner->getPlanner()->getContainer();
 
         $migrations = [
-            $this->createMigration('A', ['B']),
+            $this->createMigration('A', ['C']),
             $this->createMigration('B'),
             $this->createMigration('C', ['B']),
         ];
@@ -75,5 +86,6 @@ class RunnerTest extends TestCase
         }
 
         $this->assertSame($this->runner, $this->runner->up());
+        $this->assertSame(['B', 'C', 'A'], $helper->getMigrationNames());
     }
 }
