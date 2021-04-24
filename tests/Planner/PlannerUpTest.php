@@ -92,6 +92,8 @@ class PlannerUpTest extends TestCase
     public function testUpDependenciesCircular(): void
     {
         $this->expectException(Exception::class);
+        $this->expectExceptionCode(Exception::DEPENDENCY_CIRCULAR);
+        $this->expectExceptionMessage('Circular Dependency Found: "A, B, C, A"');
 
         $container = $this->planner->getContainer();
 

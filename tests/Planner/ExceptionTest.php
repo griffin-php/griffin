@@ -19,4 +19,9 @@ class ExceptionTest extends TestCase
     {
         $this->assertInstanceOf(BaseException::class, $this->exception);
     }
+
+    public function testCodes(): void
+    {
+        $this->assertSame(1, Exception::DEPENDENCY_CIRCULAR);
+    }
 }
