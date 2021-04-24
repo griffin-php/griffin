@@ -119,12 +119,19 @@ Griffin is a generic migration framework and it is not database focused. You are
 free to use Griffin to provisioning what needed, like directory structures,
 packages and even database schemas.
 
-## Example
+## Usage
+
+Each migration must be defined using `Griffin\Migration\MigrationInterface`.
+Migrations must return its name with `getName` method and dependencies with
+`getDependencies`. Each migration must check if resource is created using
+`assert` method, returning a boolean as result. Also, they are responsible to
+create the resource using `up` method and to destroy using `down`. Griffin uses
+these methods to plan and run migrations.
 
 ```php
-namespace Database\Migration\Table;
+namespace FooBar\Database\Migration;
 
-use Database\Driver;
+use FooBar\Database\Driver;
 use Griffin\Migration\MigrationInterface;
 
 class Item implements MigrationInterface
@@ -132,6 +139,11 @@ class Item implements MigrationInterface
     public function __construct(
         private Driver $driver,
     ) {}
+
+    public function getName(): string
+    {
+        return self::class;
+    }
 
     public function getDependencies(): array
     {
