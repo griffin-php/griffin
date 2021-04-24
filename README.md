@@ -37,6 +37,18 @@ migration called `Messages` without any dependency from `Orders`. Next, you
 create a migration named `Items` with a foreign key to `Orders`. Everything
 works fine and you deploy them to *stage* environment on friday.
 
+```
+./migrations/001_Orders.php
+./migrations/002_Messages.php
+./migrations/003_Items.php
+```
+
+On monday you find a problem with your migrations and you want to rollback. But
+you don't want to remove `Messages` table because other developer are presenting
+the newest features to Product Owner.
+
+And here comes Griffin.
+
 ## Example
 
 ```php
