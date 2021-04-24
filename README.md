@@ -196,6 +196,8 @@ Griffin plans your migrations execution before running them using
 ```php
 use FooBar\Database\Migration;
 use Griffin\Migration\Container;
+use Griffin\Migration\Exception as MigrationException;
+use Griffin\Planner\Exception as PlannerException;
 use Griffin\Planner\Planner;
 
 $planner = new Planner(new Container());
@@ -207,11 +209,25 @@ $planner->getContainer()
 
 /** @var Container $migrations **/
 
-// plan execution for every migration
-$migrations = $planner->up();
-// plan execution for Orders and Items
-$migrations = $planner->up(Migration\Items::class)
+try {
+    // plan execution for every migration
+    $migrations = $planner->up();
+    // plan execution for Orders and Items
+    $migrations = $planner->up(Migration\Items::class)
+} catch (PlannerException $e) {
+    // PlannerException::DEPENDENCY_CIRCULAR (Circular Dependency Found)
+} catch (MigrationException $e) {
+    // MigrationException::NAME_UNKNOWN (Unknown Migration Name)
+    // MigrationException::NAME_DUPLICATED (Duplicated Migration Name)
+    // MigrationException::CALLABLE_UNKNOWN (Unknown Callable Function)
+}
 ```
+
+You can add migrations to container in any order, because dependencies are
+checked on planning stage. This stage is responsible to check circular
+dependencies, where `A` migration depends of `B` and `B` depends of `A`. This
+type of dependencies are not allowed and will rise `Exceptions` describing the
+problem.
 
 ```php
 use Database\Migration\Table as TableMigration;
