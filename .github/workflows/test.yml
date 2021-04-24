@@ -1,0 +1,40 @@
+name: Test
+
+on:
+  pull_request:
+    branches: ["main"]
+  push:
+    branches: ["main"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        PHP_VERSION:
+          - "8.0"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Prepare
+        run: |
+          echo UID=`id -u` >> $GITHUB_ENV
+          echo GID=`id -g` >> $GITHUB_ENV
+
+      - name: Build
+        run: docker-compose build
+        env:
+          PHP_VERSION: ${{ matrix.PHP_VERSION }}
+
+      - name: Install
+        run: docker-compose run php composer install
+
+      - name: Test
+        run: docker-compose run -e COVERAGE_OPTIONS php composer test
+        env:
+          COVERAGE_OPTIONS: --coverage-text
+
+      - name: Clean
+        run: docker-compose down
+        if: always()
