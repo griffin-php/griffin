@@ -15,14 +15,14 @@ class MigrationAssertTest extends TestCase
         $this->migration = new Migration();
     }
 
-    public function testWithAssert(): void
+    public function testAssert(): void
     {
         $migration = $this->migration->withAssert(fn() => null);
 
         $this->assertNotSame($this->migration, $migration); // Immutability
     }
 
-    public function testWithAssertCallable(): void
+    public function testCallable(): void
     {
         $operator = $this->createMock(OperatorInterface::class);
 
@@ -35,7 +35,7 @@ class MigrationAssertTest extends TestCase
         $this->assertTrue($migration->assert());
     }
 
-    public function testWithAssertInvokable(): void
+    public function testInvokable(): void
     {
         $operator = $this->createMock(OperatorInterface::class);
 

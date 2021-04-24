@@ -15,14 +15,14 @@ class MigrationUpTest extends TestCase
         $this->migration = new Migration();
     }
 
-    public function testWithUp(): void
+    public function testUp(): void
     {
         $migration = $this->migration->withUp(fn() => null);
 
         $this->assertNotSame($this->migration, $migration); // Immutability
     }
 
-    public function testWithUpCallable(): void
+    public function testCallable(): void
     {
         $operator = $this->createMock(OperatorInterface::class);
 
@@ -32,7 +32,7 @@ class MigrationUpTest extends TestCase
         $this->migration->withUp([$operator, 'operate'])->up();
     }
 
-    public function testWithUpInvokable(): void
+    public function testInvokable(): void
     {
         $operator = $this->createMock(OperatorInterface::class);
 
