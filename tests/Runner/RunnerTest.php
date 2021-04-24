@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace GriffinTest\Runner;
 
-use Griffin\Event\Migration\UpAfter as EventMigrationUpAfter;
 use Griffin\Migration\Container;
 use Griffin\Migration\MigrationInterface;
 use Griffin\Planner\Planner;
@@ -56,16 +55,7 @@ class RunnerTest extends TestCase
 
     public function testBasic(): void
     {
-        $helper     = new Container();
-        $dispatcher = new EventDispatcher();
-
-        $dispatcher->subscribeTo(
-            EventMigrationUpAfter::class,
-            fn($event) => $helper->addMigration($event->getMigration()),
-        );
-
-        $this->runner->setEventDispatcher($dispatcher);
-
+        $helper    = new Container();
         $container = $this->runner->getPlanner()->getContainer();
 
         $migrations = [
@@ -80,7 +70,8 @@ class RunnerTest extends TestCase
                 ->will($this->returnValue(false));
 
             $migration->expects($this->once())
-                ->method('up');
+                ->method('up')
+                ->will($this->returnCallback(fn() => $helper->addMigration($migration)));
 
             $container->addMigration($migration);
         }
