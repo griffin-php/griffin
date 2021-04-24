@@ -6,6 +6,7 @@ namespace GriffinTest\Planner;
 
 use Griffin\Migration\Container;
 use Griffin\Migration\MigrationInterface;
+use Griffin\Planner\Exception;
 use Griffin\Planner\Planner;
 use PHPUnit\Framework\TestCase;
 
@@ -85,5 +86,19 @@ class PlannerDownTest extends TestCase
         }
 
         $this->assertSame(['C', 'B', 'D', 'A'], $this->planner->down()->getMigrationNames());
+    }
+
+    public function testDownDependenciesCircular(): void
+    {
+        $this->expectException(Exception::class);
+
+        $container = $this->planner->getContainer();
+
+        $container
+            ->addMigration($this->createMigration('A', ['B']))
+            ->addMigration($this->createMigration('B', ['C']))
+            ->addMigration($this->createMigration('C', ['A']));
+
+        $this->planner->down();
     }
 }

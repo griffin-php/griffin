@@ -46,7 +46,7 @@ class Planner
      */
     protected function planUp(Container $visited, Container $planned, string $name): self
     {
-        $migration = $this->container->getMigration($name);
+        $migration = $this->getContainer()->getMigration($name);
 
         $visited->addMigration($migration);
 
@@ -97,7 +97,7 @@ class Planner
     {
         $dependents = [];
 
-        foreach ($this->container as $migration) {
+        foreach ($this->getContainer() as $migration) {
             $dependencies = $migration->getDependencies();
 
             if (false !== array_search($name, $dependencies)) {
@@ -116,12 +116,18 @@ class Planner
      * @param  $name    Current Migration Name
      * @return Fluent Interface
      */
-    protected function planDown(Container $planned, string $name): self
+    protected function planDown(Container $visited, Container $planned, string $name): self
     {
-        $migration = $this->container->getMigration($name);
+        $migration = $this->getContainer()->getMigration($name);
+
+        $visited->addMigration($migration);
 
         foreach ($this->getDependents($name) as $dependent) {
-            $this->planDown($planned, $dependent);
+            if ($visited->hasMigration($dependent)) {
+                throw new Exception("Circular Dependency"); // Circular Dependency
+            }
+
+            $this->planDown($visited, $planned, $dependent);
         }
 
         if (! $planned->hasMigration($name)) {
@@ -143,7 +149,7 @@ class Planner
         $planned = new Container();
 
         foreach ($names as $name) {
-            $this->planDown($planned, $name);
+            $this->planDown(new Container(), $planned, $name);
         }
 
         return $planned;
