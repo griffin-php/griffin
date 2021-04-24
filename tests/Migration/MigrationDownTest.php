@@ -2,16 +2,19 @@
 
 declare(strict_types=1);
 
-namespace GriffinTest\Migration\Migration;
+namespace GriffinTest\Migration;
 
 use Griffin\Migration\Exception;
+use Griffin\Migration\Migration;
 use GriffinTest\Migration\OperatorInterface;
-use GriffinTest\Migration\SetUpTrait;
 use PHPUnit\Framework\TestCase;
 
-class DownTest extends TestCase
+class MigrationDownTest extends TestCase
 {
-    use SetUpTrait;
+    protected function setUp(): void
+    {
+        $this->migration = new Migration();
+    }
 
     public function testWithDown(): void
     {
