@@ -70,8 +70,8 @@ class Runner
     /**
      * Run Migrations Up
      *
-     * @return Fluent Interface
      * @param $names Migration Names
+     * @return Fluent Interface
      * @SuppressWarnings(PHPMD.ShortMethodName)
      */
     public function up(string ...$names): self
@@ -107,6 +107,26 @@ class Runner
                 if ($dispatcher) {
                     $dispatcher->dispatch(new Event\Migration\UpAfter($migration));
                 }
+            }
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * Run Migrations Down
+     *
+     * @param $names Migration Names
+     * @return Fluent Interface
+     */
+    public function down(): self
+    {
+        $container = $this->getPlanner()->down();
+
+        foreach ($container as $migration) {
+            if ($migration->assert()) {
+                $migration->down();
             }
         }
 

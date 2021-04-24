@@ -188,4 +188,31 @@ class RunnerTest extends TestCase
 
         $this->runner->up();
     }
+
+    public function testDownBasic(): void
+    {
+        $helper    = new Container();
+        $container = $this->runner->getPlanner()->getContainer();
+
+        $migrations = [
+            $this->createMigration('A', ['C']),
+            $this->createMigration('B'),
+            $this->createMigration('C', ['B']),
+        ];
+
+        foreach ($migrations as $migration) {
+            $migration->expects($this->atLeast(1))
+                ->method('assert')
+                ->will($this->returnValue(true));
+
+            $migration->expects($this->once())
+                ->method('down')
+                ->will($this->returnCallback(fn() => $helper->addMigration($migration)));
+
+            $container->addMigration($migration);
+        }
+
+        $this->assertSame($this->runner, $this->runner->down());
+        $this->assertSame(['A', 'C', 'B'], $helper->getMigrationNames());
+    }
 }
