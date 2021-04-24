@@ -6,7 +6,6 @@ namespace GriffinTest\Migration;
 
 use Griffin\Migration\Exception;
 use Griffin\Migration\Migration;
-use GriffinTest\Migration\OperatorInterface;
 use PHPUnit\Framework\TestCase;
 
 class MigrationUpTest extends TestCase
