@@ -65,6 +65,8 @@ class ContainerTest extends TestCase
     public function testMigrationUnknown(): void
     {
         $this->expectException(Exception::class);
+        $this->expectExceptionCode(Exception::UNKNOWN);
+        $this->expectExceptionMessage('Unknown Migration Name: "UNKNOWN"');
 
         $this->container->getMigration('UNKNOWN');
     }

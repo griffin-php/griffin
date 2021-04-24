@@ -79,13 +79,16 @@ class Container implements Countable, IteratorAggregate
      * Retrieve a Migration
      *
      * @param $name Name
-     * @throws Griffin\Migration\Exception Unknown Name
+     * @throws Griffin\Migration\Exception Unknown Migration Name
      * @return Expected Value
      */
     public function getMigration(string $name): MigrationInterface
     {
         if (! $this->hasMigration($name)) {
-            throw new Exception();
+            throw new Exception(
+                sprintf('Unknown Migration Name: "%s"', $name),
+                Exception::UNKNOWN,
+            );
         }
 
         return $this->migrations[$name];

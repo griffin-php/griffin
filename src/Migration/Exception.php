@@ -8,5 +8,6 @@ use Exception as BaseException;
 
 class Exception extends BaseException
 {
-    const DUPLICATED = 1;
+    const UNKNOWN    = 1;
+    const DUPLICATED = 2;
 }

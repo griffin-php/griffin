@@ -22,6 +22,7 @@ class ExceptionTest extends TestCase
 
     public function testCodes(): void
     {
-        $this->assertSame(1, Exception::DUPLICATED);
+        $this->assertSame(1, Exception::UNKNOWN);
+        $this->assertSame(2, Exception::DUPLICATED);
     }
 }
