@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Griffin\Runner;
 
 use Griffin\Event;
+use Griffin\Migration\Container;
 use Griffin\Planner\Planner;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Throwable;
 
 /**
  * Runner
@@ -74,6 +76,7 @@ class Runner
      */
     public function up(string ...$names): self
     {
+        $visited   = new Container();
         $container = $this->getPlanner()->up(...$names);
 
         foreach ($container as $migration) {
@@ -84,7 +87,22 @@ class Runner
                     $dispatcher->dispatch(new Event\Migration\UpBefore($migration));
                 }
 
-                $migration->up();
+                try {
+                    // Migrate!
+                    $migration->up();
+                    // Done!
+                    $visited->addMigration($migration);
+                } catch (Throwable $error) {
+                    // Error Found
+                    foreach ($visited as $migration) {
+                        if ($migration->assert()) {
+                            // Rollback
+                            $migration->down(); // TODO $this->down();
+                        }
+                    }
+                    // Show Errors
+                    throw $error;
+                }
 
                 if ($dispatcher) {
                     $dispatcher->dispatch(new Event\Migration\UpAfter($migration));

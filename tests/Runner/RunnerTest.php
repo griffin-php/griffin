@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace GriffinTest\Runner;
 
 use ArrayObject;
+use Exception as BaseException;
 use Griffin\Event;
 use Griffin\Migration\Container;
 use Griffin\Migration\MigrationInterface;
@@ -147,5 +148,44 @@ class RunnerTest extends TestCase
         }
 
         $this->runner->up('A', 'E');
+    }
+
+    public function testUpRollback(): void
+    {
+        $this->expectException(BaseException::class);
+        $this->expectExceptionCode(123);
+        $this->expectExceptionMessage('Ops!');
+
+        $container = $this->runner->getPlanner()->getContainer();
+
+        $migrationA = $this->createMigration('A', ['B']);
+        $migrationB = $this->createMigration('B', ['C']);
+        $migrationC = $this->createMigration('C');
+
+        $migrationA->expects($this->once())
+            ->method('assert')
+            ->will($this->returnValue(false));
+
+        $migrationA->expects($this->once())
+            ->method('up')
+            ->will($this->throwException(new BaseException('Ops!', 123)));
+
+        $container->addMigration($migrationA);
+
+        foreach ([$migrationB, $migrationC] as $migration) {
+            $migration->expects($this->exactly(2))
+                ->method('assert')
+                ->will($this->onConsecutiveCalls(false, true));
+
+            $migration->expects($this->once())
+                ->method('up');
+
+            $migration->expects($this->once())
+                ->method('down');
+
+            $container->addMigration($migration);
+        }
+
+        $this->runner->up();
     }
 }

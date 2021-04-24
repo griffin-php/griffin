@@ -76,6 +76,7 @@ class ContainerTest extends TestCase
         // Everything must Work
         $this->expectNotToPerformAssertions();
 
+        // Dependencies are **NOT** Resolved by Container
         $this->container->addMigration($this->createMigration('A', ['B']));
     }
 }
