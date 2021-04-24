@@ -137,7 +137,7 @@ namespace FooBar\Database\Migration;
 use FooBar\Database\Driver;
 use Griffin\Migration\MigrationInterface;
 
-class Item implements MigrationInterface
+class Items implements MigrationInterface
 {
     public function __construct(
         private Driver $driver,
