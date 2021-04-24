@@ -8,6 +8,7 @@ use Griffin\Migration\Container;
 use Griffin\Migration\MigrationInterface;
 use Griffin\Planner\Planner;
 use Griffin\Runner\Runner;
+use League\Event\EventDispatcher;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -39,6 +40,17 @@ class RunnerTest extends TestCase
     public function testPlanner(): void
     {
         $this->assertSame($this->planner, $this->runner->getPlanner());
+    }
+
+    public function testEventDispatcher(): void
+    {
+        $dispatcher = new EventDispatcher();
+
+        $this->assertNull($this->runner->getEventDispatcher());
+        $this->assertSame($this->runner, $this->runner->setEventDispatcher($dispatcher));
+        $this->assertSame($dispatcher, $this->runner->getEventDispatcher());
+        $this->assertSame($this->runner, $this->runner->setEventDispatcher(null));
+        $this->assertNull($this->runner->getEventDispatcher());
     }
 
     public function testBasic(): void

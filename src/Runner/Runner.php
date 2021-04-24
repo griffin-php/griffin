@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Griffin\Runner;
 
 use Griffin\Planner\Planner;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Runner
@@ -15,6 +16,11 @@ class Runner
      * Planner
      */
     protected Planner $planner;
+
+    /**
+     * Event Dispatcher PSR-14
+     */
+    protected ?EventDispatcherInterface $eventDispatcher = null;
 
     /**
      * Default Constructor
@@ -34,6 +40,28 @@ class Runner
     public function getPlanner(): Planner
     {
         return $this->planner;
+    }
+
+    /**
+     * Configure Event Dispatcher
+     *
+     * @param Event Dispatcher
+     * @return Fluent Interface
+     */
+    public function setEventDispatcher(?EventDispatcherInterface $eventDispatcher): self
+    {
+        $this->eventDispatcher = $eventDispatcher;
+        return $this;
+    }
+
+    /**
+     * Retrieve Event Dispatcher
+     *
+     * @return Event Dispatcher
+     */
+    public function getEventDispatcher(): ?EventDispatcherInterface
+    {
+        return $this->eventDispatcher;
     }
 
     /**
