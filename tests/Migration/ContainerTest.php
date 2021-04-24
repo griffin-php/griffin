@@ -51,6 +51,8 @@ class ContainerTest extends TestCase
     public function testMigrationsDuplicated(): void
     {
         $this->expectException(Exception::class);
+        $this->expectExceptionCode(Exception::DUPLICATED);
+        $this->expectExceptionMessage('Duplicated Migration Name: "MIGRATION"');
 
         $migrationA = $this->createMigration('MIGRATION');
         $migrationB = $this->createMigration('MIGRATION');

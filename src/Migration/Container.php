@@ -56,7 +56,7 @@ class Container implements Countable, IteratorAggregate
      * Add a Migration
      *
      * @param $migration Migration
-     * @throws Griffin\Migration\Exception Duplicated Migration
+     * @throws Griffin\Migration\Exception Duplicated Migration Name
      * @return Fluent Interface
      */
     public function addMigration(MigrationInterface $migration): self
@@ -64,7 +64,10 @@ class Container implements Countable, IteratorAggregate
         $name = $migration->getName();
 
         if ($this->hasMigration($name)) {
-            throw new Exception();
+            throw new Exception(
+                sprintf('Duplicated Migration Name: "%s"', $name),
+                Exception::DUPLICATED,
+            );
         }
 
         $this->migrations[$name] = $migration;
