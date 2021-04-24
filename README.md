@@ -270,6 +270,16 @@ try {
 }
 ```
 
+For every planned migration `Griffin\Runner\Runner` will execute migration `up`
+method if `assert` returns `false`. During a migration executing, errors can be
+raise and Griffin will try to automatically rollback executed migrations. If
+during rollback Griffin found another error an exeception will be throw.
+
+If you want to rollback migrations manually, Griffin will use migration `assert`
+method to check if resource was created and if this method returns `true`,
+migration method `down` will be called. As before, if Griffin finds an error it
+will try to recreate resources.
+
 ### Event Dispatcher
 
 ```php
