@@ -45,8 +45,13 @@ $container = (new Container())
 $planner = new Planner($container);
 $runner  = new Runner($planner);
 
+$runner->up(); // create everything
+$runner->down(); // destroy everything
+
 $runner->up('items'); // create orders and items
 $runner->down('orders'); // destroy orders and items
+
+$runner->up('items', 'orders'); // create first orders and then items
 ```
 
 ## Installation
