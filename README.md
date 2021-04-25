@@ -51,9 +51,9 @@ $runner->down('orders'); // destroy orders and items
 
 ## Installation
 
-This package uses Composer as default repository. You can install it adding the
-name of package in `require` section of `composer.json`, pointing to the latest
-stable version.
+This package uses [Composer](https://packagist.org/packages/griffin/griffin) as
+default repository. You can install it adding the name of package in `require`
+section of `composer.json`, pointing to the latest stable version.
 
 ```json
 {
