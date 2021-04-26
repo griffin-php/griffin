@@ -82,7 +82,7 @@ structures from scratch, provisioning tables or columns using a step-by-step
 approach. There are standalone tools to run migrations, like Phinx. Also, there
 are other ones embedded into frameworks, like Laravel or Doctrine.
 
-If we check them, they use a linear approach, where next state must *migrate*
+If we inspect them, they use a linear approach, where next state must *migrate*
 from current state. Migrations can be rolled back, so if we want to revert some
 changes, we must *rollback* from current state to previous state. Each migration
 knows how to create itself and destroy itself.
