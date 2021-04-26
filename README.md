@@ -222,7 +222,7 @@ $planner->getContainer()
     ->addMigration(new Migration\Items())
     ->addMigration(new Migration\Products());
 
-/** @var Container $migrations **/
+/** @var Griffin\Migration\Container $migrations **/
 
 try {
     // plan up execution for every migration
