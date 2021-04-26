@@ -287,9 +287,10 @@ try {
 ```
 
 For every planned migration `Griffin\Runner\Runner` will execute migration `up`
-method if `assert` returns `false`. During a migration executing, errors can be
-raise and Griffin will try to automatically rollback executed migrations. If
-during rollback Griffin found another error an exeception will be throw.
+method if `assert` returns `false`. During a migration execution, errors can be
+raised and Griffin will try to automatically rollback executed migrations. If
+during rollback from this migration Griffin finds another error, an exeception
+will be throw.
 
 If you want to rollback migrations manually, Griffin will use migration `assert`
 method to check if resource was created and if this method returns `true`,
