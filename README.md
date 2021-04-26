@@ -122,8 +122,8 @@ for each migration and Griffin is responsible to plan the execution priority.
 Based on provisioning tools like Puppet and Terraform, Griffin can plan
 execution and run it using graph theory, where each migration works like a
 vertice and dependencies define directed paths. Griffin searches for circular
-dependencies on planning and can automatically rollback changes if some
-migration found errors during its execution.
+dependencies on planning and can automatically rollback changes if errors were
+found.
 
 Griffin is a generic migration framework and it is not database focused. You are
 free to use Griffin to provisioning what needed, like directory structures,
