@@ -79,8 +79,8 @@ migrations, please check
 Migrations are tools to change system current state, adding (or removing)
 features based on previous state. Generally, they are used to create database
 structures from scratch, provisioning tables or columns using a step-by-step
-approach. There are standalone tools to run migrations with PHP, like Phinx.
-Also, there are other ones embedded into frameworks like Laravel or Doctrine.
+approach. There are standalone tools to run migrations, like Phinx. Also, there
+are other ones embedded into frameworks, like Laravel or Doctrine.
 
 If we check them, they use a linear approach, where next state must *migrate*
 from current state. Migrations can be rolled back, so if we want to revert some
