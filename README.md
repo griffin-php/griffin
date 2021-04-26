@@ -85,7 +85,7 @@ are other ones embedded into frameworks, like Laravel or Doctrine.
 If we inspect them, they use a linear approach, where next state must *migrate*
 from current state. Migrations can be rolled back, so if we want to revert some
 changes, we must *rollback* from current state to previous state. Each migration
-knows how to create itself and destroy itself.
+knows how to create and destroy itself.
 
 For example, we have three migrations `A`, `B` and `C` created sequentially. If
 our current state is `A` and we must migrate to `C`, we must execute migrations
