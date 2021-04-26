@@ -155,6 +155,9 @@ class Items implements MigrationInterface
         return self::class;
     }
 
+    /**
+     * @return string[]
+     */
     public function getDependencies(): array
     {
         return [
