@@ -183,8 +183,9 @@ class Items implements MigrationInterface
 }
 ```
 
-You can create objects from class `Griffin\Migration\Migration`, where values
-can be defined with immutable methods and callables.
+You can create objects from class `Griffin\Migration\Migration`, that implements
+`Griffin\Migration\MigrationInterface` and behaviors can be defined using
+immutable methods.
 
 ```php
 use FooBar\Database\Driver;
