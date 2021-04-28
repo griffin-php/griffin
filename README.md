@@ -239,6 +239,7 @@ try {
     $migrations = $planner->down();
 } catch (PlannerException $e) {
     // PlannerException::DEPENDENCY_CIRCULAR (Circular Dependency Found)
+    // PlannerException::DEPENDENCY_INVALID (Invalid Dependency Data Type)
 } catch (MigrationException $e) {
     // MigrationException::NAME_UNKNOWN (Unknown Migration Name)
     // MigrationException::NAME_DUPLICATED (Duplicated Migration Name)
@@ -285,6 +286,7 @@ try {
     // RunnerException::ROLLBACK_CIRCULAR (Circular Rollback Found)
 } catch (PlannerException $e) {
     // PlannerException::DEPENDENCY_CIRCULAR (Circular Dependency Found)
+    // PlannerException::DEPENDENCY_INVALID (Invalid Dependency Data Type)
 } catch (MigrationException $e) {
     // MigrationException::NAME_UNKNOWN (Unknown Migration Name)
     // MigrationException::NAME_DUPLICATED (Duplicated Migration Name)
