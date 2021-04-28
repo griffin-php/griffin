@@ -257,7 +257,7 @@ exception describing the problem.
 
 ### Running
 
-After planning, Griffin runs migration using `Griffin\Runner\Runner` class.
+After planning, Griffin runs migrations using `Griffin\Runner\Runner` class.
 Internally, Griffin plans migrations execution first and after that it will
 execute running on second stage.
 
