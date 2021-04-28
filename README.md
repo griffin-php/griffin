@@ -342,6 +342,17 @@ $runner->down();
 // Griffin\Event\Migration\DownAfter::Database\Migration\Table\Item
 ```
 
+## Development
+
+You can use Docker Compose to build an image and run a container to develop and
+test this package.
+
+```bash
+docker-compose build
+docker-compose run --rm php composer install
+docker-compose run --rm php composer test
+```
+
 ## References
 
 * Wikipedia: [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory)
