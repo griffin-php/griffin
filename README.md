@@ -174,17 +174,17 @@ class Items implements MigrationInterface
 
     public function assert(): bool
     {
-        return $this->driver->hasTable('items');
+        return $this->driver->table->has('items');
     }
 
     public function up(): void
     {
-        $this->driver->createTable('items');
+        $this->driver->table->create('items');
     }
 
     public function down(): void
     {
-        $this->driver->dropTable('items');
+        $this->driver->table->drop('items');
     }
 }
 ```
@@ -202,9 +202,9 @@ $driver = new Driver();
 $migration = (new Migration())
     ->withName('items')
     ->withDependencies(['orders', 'products'])
-    ->withAssert(fn() => $driver->hasTable('items'))
-    ->withUp(fn() => $driver->createTable('items'))
-    ->withDown(fn() => $driver->dropTable('items'));
+    ->withAssert(fn() => $driver->table->has('items'))
+    ->withUp(fn() => $driver->table->create('items'))
+    ->withDown(fn() => $driver->table->drop('items'));
 ```
 
 ### Planning
