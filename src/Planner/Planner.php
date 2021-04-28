@@ -51,6 +51,13 @@ class Planner
         $visited->addMigration($migration);
 
         foreach ($migration->getDependencies() as $dependency) {
+            if (! is_string($dependency)) {
+                throw new Exception(
+                    sprintf('Invalid Migration "%s" Dependency Data Type: "%s"', $name, gettype($dependency)),
+                    Exception::DEPENDENCY_INVALID,
+                );
+            }
+
             if ($visited->hasMigration($dependency)) {
                 $path   = $visited->getMigrationNames();
                 $path[] = $dependency;
