@@ -114,8 +114,8 @@ works fine and you deploy them to *stage* environment on friday.
 ```
 
 On monday you find a problem with your migrations and you want to rollback. But
-you don't want to remove `Messages` table because other developer is presenting
-the newest features to Product Owner.
+you don't want to remove `Messages` table because other developer is showing the
+newest features to Product Owner.
 
 And here comes Griffin.
 
