@@ -251,7 +251,7 @@ checked on planning stage. Migration names are unique and must not be
 duplicated. Using objects from `Griffin\Migration\Migration` immutable class can
 throw errors if callables were not defined.
 
-This stage also search for circular dependencies, where `A` depends of `B` and
+This stage also searches for circular dependencies, where `A` depends of `B` and
 `B` depends of `A`. This type of requirement is not allowed and will rise an
 exception describing the problem.
 
