@@ -102,7 +102,7 @@ reason, you can't. Even, if you want to rollback `C` and `A` ignoring `B`, you
 are locked.
 
 Bringing to the world of database migrations, you can create migration `Orders`
-that create table into schema. Right after that, other developer create a
+that creates table into schema. Right after that, other developer creates a
 migration called `Messages` without any dependency from `Orders`. Next, you
 create a migration named `Items` with a foreign key to `Orders`. Everything
 works fine and you deploy them to *stage* environment on friday.
