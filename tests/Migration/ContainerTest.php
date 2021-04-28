@@ -79,4 +79,13 @@ class ContainerTest extends TestCase
         // Dependencies are **NOT** Resolved by Container
         $this->container->addMigration($this->createMigration('A', ['B']));
     }
+
+    public function testMigrationAllowInvalidDependency(): void
+    {
+        // Everything must Work
+        $this->expectNotToPerformAssertions();
+
+        // Dependencies are **NOT** Resolved by Container
+        $this->container->addMigration($this->createMigration('A', [3.1415]));
+    }
 }

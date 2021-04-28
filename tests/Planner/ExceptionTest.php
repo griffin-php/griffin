@@ -23,5 +23,6 @@ class ExceptionTest extends TestCase
     public function testCodes(): void
     {
         $this->assertSame(1, Exception::DEPENDENCY_CIRCULAR);
+        $this->assertSame(2, Exception::DEPENDENCY_INVALID);
     }
 }

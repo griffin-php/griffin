@@ -48,6 +48,19 @@ class PlannerUpTest extends TestCase
         $this->assertSame(['B', 'A'], $this->planner->up()->getMigrationNames());
     }
 
+    public function testInvalidDependencies(): void
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionCode(Exception::DEPENDENCY_INVALID);
+        $this->expectExceptionMessage('Invalid Migration "A" Dependency Data Type: "float"');
+
+        $container = $this->planner->getContainer();
+
+        $container->addMigration($this->createMigration('A', [3.1415]));
+
+        $this->planner->up();
+    }
+
     public function testDependenciesDeep(): void
     {
         $container = $this->planner->getContainer();
