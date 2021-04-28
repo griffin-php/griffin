@@ -111,6 +111,15 @@ class Planner
         $dependents = [];
 
         foreach ($this->getContainer() as $migration) {
+            foreach ($migration->getDependencies() as $dependency) {
+                if (! is_string($dependency)) {
+                    throw new Exception(
+                        sprintf('Invalid Migration "%s" Dependency Data Type: "%s"', $name, gettype($dependency)),
+                        Exception::DEPENDENCY_INVALID,
+                    );
+                }
+            }
+
             // Resolve Unknown Dependents
             $resolver     = fn($dependency) => $this->getContainer()->getMigration($dependency)->getName();
             $dependencies = array_map($resolver, $migration->getDependencies());
