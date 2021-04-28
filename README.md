@@ -133,7 +133,7 @@ found.
 
 Griffin is a generic migration framework and it is not database focused. You are
 free to use Griffin to provisioning what needed, like directory structures,
-packages and even database schemas.
+packages, crawlers and even database schemas.
 
 ## Usage
 
