@@ -51,7 +51,9 @@ $runner->down(); // destroy everything
 $runner->up('items'); // create orders and items
 $runner->down('orders'); // destroy orders and items
 
-$runner->up('items', 'orders'); // create first orders and then items
+// create orders and items
+// regardless the order of elements informed
+$runner->up('items', 'orders');
 ```
 
 You might want to check
