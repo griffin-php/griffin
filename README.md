@@ -54,6 +54,10 @@ $runner->down('orders'); // destroy orders and items
 $runner->up('items', 'orders'); // create first orders and then items
 ```
 
+You might want to check
+[more examples](https://github.com/griffin-php/griffin-examples) to learn how to
+define migrations using Griffin.
+
 ## Installation
 
 This package uses [Composer](https://packagist.org/packages/griffin/griffin) as
