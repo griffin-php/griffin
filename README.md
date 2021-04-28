@@ -23,6 +23,8 @@ use Griffin\Migration\Migration;
 use Griffin\Planner\Planner;
 use Griffin\Runner\Runner;
 
+$driver = new Driver(); // Pseudo Database Driver
+
 $orders = (new Migration())
     ->withName('orders')
     ->withAssert(fn() => $driver->table->has('orders'))
@@ -43,15 +45,26 @@ $container = (new Container())
 $planner = new Planner($container);
 $runner  = new Runner($planner);
 
+$runner->up(); // create everything
+$runner->down(); // destroy everything
+
 $runner->up('items'); // create orders and items
 $runner->down('orders'); // destroy orders and items
+
+// create orders and items
+// regardless the order of elements informed
+$runner->up('items', 'orders');
 ```
+
+You might want to check
+[more examples](https://github.com/griffin-php/griffin-examples) to learn how to
+define migrations using Griffin.
 
 ## Installation
 
-This package uses Composer as default repository. You can install it adding the
-name of package in `require` section of `composer.json`, pointing to the latest
-stable version.
+This package uses [Composer](https://packagist.org/packages/griffin/griffin) as
+default repository. You can install it adding the name of package in `require`
+section of `composer.json`, pointing to the latest stable version.
 
 ```json
 {
@@ -69,27 +82,27 @@ migrations, please check
 
 ## Introduction
 
-Migrations are tools to change system current state, adding features based on
-previous state. Generally, they are used to create database structures from
-scratch, provisioning tables or columns using a step-by-step approach. There are
-standalone tools to run migrations with PHP, like Phinx. Also, there are other
-ones embedded into frameworks like Laravel or Doctrine.
+Migrations are tools to change system current state, adding (or removing)
+features based on previous state. Generally, they are used to create database
+structures from scratch, provisioning tables or columns using a step-by-step
+approach. There are standalone tools to run migrations, like Phinx. Also, there
+are other ones embedded into frameworks, like Laravel or Doctrine.
 
-If we check them, they use a linear approach, where next state must *migrate*
+If we inspect them, they use a linear approach, where next state must *migrate*
 from current state. Migrations can be rolled back, so if we want to revert some
 changes, we must *rollback* from current state to previous state. Each migration
-knows how to create itself and destroy itself.
+knows how to create and destroy itself.
 
 For example, we have three migrations `A`, `B` and `C` created sequentially. If
 our current state is `A` and we must migrate to `C`, we must execute migrations
-`A`, `B` and `C`, in that order, respectively. If we want to rollback from `C`
-to `A`, we must execute them backwards, `C`, `B` and `A`. But if you want to
-execute migrations `A` and `C`, because they are dependent, and ignore `B` for
-some reason, you can't. Even, if you want to rollback `C` and `A` ignoring `B`,
-you are locked.
+`B` and `C`, in that order, respectively. If we want to rollback from `C` to
+`A`, we must execute them backwards, `B` and `A`. But if you want to execute
+migrations `A` and `C`, because they are dependent, and ignore `B` for some
+reason, you can't. Even, if you want to rollback `C` and `A` ignoring `B`, you
+are locked.
 
 Bringing to the world of database migrations, you can create migration `Orders`
-that create table into schema. Right after that, other developer create a
+that creates table into schema. Right after that, other developer creates a
 migration called `Messages` without any dependency from `Orders`. Next, you
 create a migration named `Items` with a foreign key to `Orders`. Everything
 works fine and you deploy them to *stage* environment on friday.
@@ -101,8 +114,8 @@ works fine and you deploy them to *stage* environment on friday.
 ```
 
 On monday you find a problem with your migrations and you want to rollback. But
-you don't want to remove `Messages` table because other developer are presenting
-the newest features to Product Owner.
+you don't want to remove `Messages` table because other developer is showing the
+newest features to Product Owner.
 
 And here comes Griffin.
 
@@ -115,12 +128,12 @@ for each migration and Griffin is responsible to plan the execution priority.
 Based on provisioning tools like Puppet and Terraform, Griffin can plan
 execution and run it using graph theory, where each migration works like a
 vertice and dependencies define directed paths. Griffin searches for circular
-dependencies on planning and can automatically rollback changes if some
-migration found errors during its execution.
+dependencies on planning and can automatically rollback changes if errors were
+found.
 
 Griffin is a generic migration framework and it is not database focused. You are
 free to use Griffin to provisioning what needed, like directory structures,
-packages and even database schemas.
+packages, crawlers and even database schemas.
 
 ## Usage
 
@@ -148,6 +161,9 @@ class Items implements MigrationInterface
         return self::class;
     }
 
+    /**
+     * @return string[]
+     */
     public function getDependencies(): array
     {
         return [
@@ -158,23 +174,24 @@ class Items implements MigrationInterface
 
     public function assert(): bool
     {
-        return $this->driver->hasTable('items');
+        return $this->driver->table->has('items');
     }
 
     public function up(): void
     {
-        $this->driver->createTable('items');
+        $this->driver->table->create('items');
     }
 
     public function down(): void
     {
-        $this->driver->dropTable('items');
+        $this->driver->table->drop('items');
     }
 }
 ```
 
-You can create objects from class `Griffin\Migration\Migration`, where values
-can be defined with immutable methods and callables.
+You can create objects from class `Griffin\Migration\Migration`, that implements
+`Griffin\Migration\MigrationInterface` and behaviors can be defined using
+immutable methods.
 
 ```php
 use FooBar\Database\Driver;
@@ -185,9 +202,9 @@ $driver = new Driver();
 $migration = (new Migration())
     ->withName('items')
     ->withDependencies(['orders', 'products'])
-    ->withAssert(fn() => $driver->hasTable('items'))
-    ->withUp(fn() => $driver->createTable('items'))
-    ->withDown(fn() => $driver->dropTable('items'));
+    ->withAssert(fn() => $driver->table->has('items'))
+    ->withUp(fn() => $driver->table->create('items'))
+    ->withDown(fn() => $driver->table->drop('items'));
 ```
 
 ### Planning
@@ -211,7 +228,7 @@ $planner->getContainer()
     ->addMigration(new Migration\Items())
     ->addMigration(new Migration\Products());
 
-/** @var Container $migrations **/
+/** @var Griffin\Migration\Container $migrations **/
 
 try {
     // plan up execution for every migration
@@ -234,13 +251,13 @@ checked on planning stage. Migration names are unique and must not be
 duplicated. Using objects from `Griffin\Migration\Migration` immutable class can
 throw errors if callables were not defined.
 
-This stage also search for circular dependencies, where `A` depends of `B` and
-`B` depends of `A`. This type of requirement is not allowed and will rise a
+This stage also searches for circular dependencies, where `A` depends of `B` and
+`B` depends of `A`. This type of requirement is not allowed and will rise an
 exception describing the problem.
 
 ### Running
 
-After planning, Griffin runs migration using `Griffin\Runner\Runner` class.
+After planning, Griffin runs migrations using `Griffin\Runner\Runner` class.
 Internally, Griffin plans migrations execution first and after that it will
 execute running on second stage.
 
@@ -276,9 +293,10 @@ try {
 ```
 
 For every planned migration `Griffin\Runner\Runner` will execute migration `up`
-method if `assert` returns `false`. During a migration executing, errors can be
-raise and Griffin will try to automatically rollback executed migrations. If
-during rollback Griffin found another error an exeception will be throw.
+method if `assert` returns `false`. During a migration execution, errors can be
+raised and Griffin will try to automatically rollback executed migrations. If
+during rollback from this migration Griffin finds another error, an exeception
+will be throw.
 
 If you want to rollback migrations manually, Griffin will use migration `assert`
 method to check if resource was created and if this method returns `true`,
@@ -324,6 +342,17 @@ $runner->down();
 // Griffin\Event\Migration\UpAfter::Database\Migration\Table\Item
 // Griffin\Event\Migration\DownBefore::Database\Migration\Table\Item
 // Griffin\Event\Migration\DownAfter::Database\Migration\Table\Item
+```
+
+## Development
+
+You can use Docker Compose to build an image and run a container to develop and
+test this package.
+
+```bash
+docker-compose build
+docker-compose run --rm php composer install
+docker-compose run --rm php composer test
 ```
 
 ## References
