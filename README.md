@@ -215,13 +215,11 @@ Griffin plans your migrations execution before running them using
 
 ```php
 use FooBar\Database\Migration;
-use Griffin\Migration\Container;
 use Griffin\Migration\Exception as MigrationException;
 use Griffin\Planner\Exception as PlannerException;
 use Griffin\Planner\Planner;
 
-$container = new Container();
-$planner   = new Planner($container);
+$planner = new Planner();
 
 $planner->getContainer()
     ->addMigration(new Migration\Orders())
@@ -264,16 +262,17 @@ execute running on second stage.
 
 ```php
 use FooBar\Database\Migration;
-use Griffin\Migration\Container;
 use Griffin\Migration\Exception as MigrationException;
 use Griffin\Planner\Exception as PlannerException;
-use Griffin\Planner\Planner;
 use Griffin\Runner\Exception as RunnerException;
 use Griffin\Runner\Runner;
 
-$container = new Container();
-$planner   = new Planner($container);
-$runner    = new Runner($planner);
+$runner = new Runner();
+
+$runner->getPlanner()->getContainer()
+    ->addMigration(new Migration\Orders())
+    ->addMigration(new Migration\Items())
+    ->addMigration(new Migration\Products());
 
 try {
     // run up for everything
