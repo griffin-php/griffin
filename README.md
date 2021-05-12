@@ -54,6 +54,12 @@ $runner->down('orders'); // destroy orders and items
 // create orders and items
 // regardless the order of elements informed
 $runner->up('items', 'orders');
+
+// Dry Run
+$runner->setDryRun();
+$runner->up(); // do nothing
+$runner->down(); // do nothing
+$runner->unsetDryRun();
 ```
 
 You might want to check

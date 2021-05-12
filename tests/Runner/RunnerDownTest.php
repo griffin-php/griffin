@@ -207,4 +207,23 @@ class RunnerDownTest extends TestCase
 
         $this->runner->down();
     }
+
+    public function testDryRun(): void
+    {
+        $migration = $this->createMigration('A');
+
+        $migration->expects($this->atLeast(1))
+            ->method('assert')
+            ->will($this->returnValue(true));
+
+        $migration->expects($this->never())
+            ->method('down');
+
+        $this->runner->getPlanner()->getContainer()
+            ->addMigration($migration);
+
+        $this->runner
+            ->setDryRun()
+            ->down();
+    }
 }

@@ -26,6 +26,11 @@ class Runner
     protected ?EventDispatcherInterface $eventDispatcher = null;
 
     /**
+     * Dry Run
+     */
+    protected bool $dryRun = false;
+
+    /**
      * Default Constructor
      *
      * @param $planner Planner
@@ -87,8 +92,11 @@ class Runner
                     $dispatcher->dispatch(new Event\Migration\UpBefore($migration));
                 }
                 try {
-                    // Migrate!
-                    $migration->up();
+                    // Dry Run?
+                    if (! $this->isDryRun()) {
+                        // Migrate!
+                        $migration->up();
+                    }
                     // Done!
                     $visited->addMigration($migration);
                 } catch (Throwable $error) {
@@ -147,8 +155,11 @@ class Runner
                     $dispatcher->dispatch(new Event\Migration\DownBefore($migration));
                 }
                 try {
-                    // Migrate!
-                    $migration->down();
+                    // Dry Run?
+                    if (! $this->isDryRun()) {
+                        // Migrate!
+                        $migration->down();
+                    }
                     // Done!
                     $visited->addMigration($migration);
                 } catch (Throwable $error) {
@@ -184,5 +195,39 @@ class Runner
     public function down(string ...$names): self
     {
         return $this->runDown(0, ...$names);
+    }
+
+    /**
+     * Check Dry Run
+     *
+     * @return bool Expected Value
+     */
+    public function isDryRun(): bool
+    {
+        return $this->dryRun;
+    }
+
+    /**
+     * Configure Dry Run
+     *
+     * @return Fluent Interface
+     */
+    public function setDryRun(): self
+    {
+        $this->dryRun = true;
+
+        return $this;
+    }
+
+    /**
+     * Unconfigure Dry Run
+     *
+     * @return Fluent Interface
+     */
+    public function unsetDryRun(): self
+    {
+        $this->dryRun = false;
+
+        return $this;
     }
 }
