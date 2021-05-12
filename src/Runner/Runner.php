@@ -30,9 +30,9 @@ class Runner
      *
      * @param $planner Planner
      */
-    public function __construct(Planner $planner)
+    public function __construct(?Planner $planner = null)
     {
-        $this->planner = $planner;
+        $this->planner = $planner ?? new Planner();
     }
 
     /**

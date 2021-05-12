@@ -4,12 +4,21 @@ declare(strict_types=1);
 
 namespace GriffinTest\Runner;
 
+use Griffin\Planner\Planner;
+use Griffin\Runner\Runner;
 use League\Event\EventDispatcher;
 use PHPUnit\Framework\TestCase;
 
 class RunnerTest extends TestCase
 {
     use RunnerTrait;
+
+    public function testConstructor(): void
+    {
+        $runner = new Runner();
+
+        $this->assertInstanceof(Planner::class, $runner->getPlanner());
+    }
 
     public function testPlanner(): void
     {
