@@ -26,6 +26,11 @@ class Runner
     protected ?EventDispatcherInterface $eventDispatcher = null;
 
     /**
+     * Dry Run
+     */
+    protected bool $dryRun = false;
+
+    /**
      * Default Constructor
      *
      * @param $planner Planner
@@ -184,5 +189,39 @@ class Runner
     public function down(string ...$names): self
     {
         return $this->runDown(0, ...$names);
+    }
+
+    /**
+     * Check Dry Run
+     *
+     * @return bool Expected Value
+     */
+    public function isDryRun(): bool
+    {
+        return $this->dryRun;
+    }
+
+    /**
+     * Configure Dry Run
+     *
+     * @return Fluent Interface
+     */
+    public function setDryRun(): self
+    {
+        $this->dryRun = true;
+
+        return $this;
+    }
+
+    /**
+     * Unconfigure Dry Run
+     *
+     * @return Fluent Interface
+     */
+    public function unsetDryRun(): self
+    {
+        $this->dryRun = false;
+
+        return $this;
     }
 }

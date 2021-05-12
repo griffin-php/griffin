@@ -26,4 +26,13 @@ class RunnerTest extends TestCase
         $this->assertSame($this->runner, $this->runner->setEventDispatcher(null));
         $this->assertNull($this->runner->getEventDispatcher());
     }
+
+    public function testDryRun(): void
+    {
+        $this->assertFalse($this->runner->isDryRun());
+        $this->assertSame($this->runner, $this->runner->setDryRun());
+        $this->assertTrue($this->runner->isDryRun());
+        $this->assertSame($this->runner, $this->runner->unsetDryRun());
+        $this->assertFalse($this->runner->isDryRun());
+    }
 }
