@@ -92,8 +92,11 @@ class Runner
                     $dispatcher->dispatch(new Event\Migration\UpBefore($migration));
                 }
                 try {
-                    // Migrate!
-                    $migration->up();
+                    // Dry Run?
+                    if (! $this->isDryRun()) {
+                        // Migrate!
+                        $migration->up();
+                    }
                     // Done!
                     $visited->addMigration($migration);
                 } catch (Throwable $error) {

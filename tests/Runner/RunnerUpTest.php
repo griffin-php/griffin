@@ -198,4 +198,23 @@ class RunnerUpTest extends TestCase
 
         $this->runner->up();
     }
+
+    public function testDryRun(): void
+    {
+        $migration = $this->createMigration('A');
+
+        $migration->expects($this->atLeast(1))
+            ->method('assert')
+            ->will($this->returnValue(false));
+
+        $migration->expects($this->never())
+            ->method('up');
+
+        $this->runner->getPlanner()->getContainer()
+            ->addMigration($migration);
+
+        $this->runner
+            ->setDryRun()
+            ->up();
+    }
 }
