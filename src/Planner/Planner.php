@@ -21,9 +21,9 @@ class Planner
      *
      * @param $container Container
      */
-    public function __construct(Container $container)
+    public function __construct(?Container $container = null)
     {
-        $this->container = $container;
+        $this->container = $container ?? new Container();
     }
 
     /**
