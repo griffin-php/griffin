@@ -9,8 +9,8 @@ use Exception as BaseException;
 use Griffin\Event;
 use Griffin\Migration\Container;
 use Griffin\Runner\Exception;
-use League\Event\EventDispatcher;
 use PHPUnit\Framework\TestCase;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use StdClass;
 
 class RunnerDownTest extends TestCase
@@ -61,17 +61,16 @@ class RunnerDownTest extends TestCase
             $container->addMigration($migration);
         }
 
-        $dispatcher = new EventDispatcher();
+        $dispatcher = $this->createMock(EventDispatcherInterface::class);
 
-        $dispatcher->subscribeTo(
-            Event\Migration\DownBefore::class,
-            fn($event) => $helper->append(sprintf('BEFORE_%s', $event->getMigration()->getName())),
-        );
-
-        $dispatcher->subscribeTo(
-            Event\Migration\DownAfter::class,
-            fn($event) => $helper->append(sprintf('AFTER_%s', $event->getMigration()->getName())),
-        );
+        $dispatcher->method('dispatch')
+            ->will($this->returnCallback(function ($event) use ($helper): void {
+                if ($event instanceof Event\Migration\DownBefore) {
+                    $helper->append(sprintf('BEFORE_%s', $event->getMigration()->getName()));
+                } elseif ($event instanceof Event\Migration\DownAfter) {
+                    $helper->append(sprintf('AFTER_%s', $event->getMigration()->getName()));
+                }
+            }));
 
         $this->runner
             ->setEventDispatcher($dispatcher)

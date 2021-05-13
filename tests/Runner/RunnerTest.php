@@ -6,8 +6,8 @@ namespace GriffinTest\Runner;
 
 use Griffin\Planner\Planner;
 use Griffin\Runner\Runner;
-use League\Event\EventDispatcher;
 use PHPUnit\Framework\TestCase;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class RunnerTest extends TestCase
 {
@@ -27,7 +27,7 @@ class RunnerTest extends TestCase
 
     public function testEventDispatcher(): void
     {
-        $dispatcher = new EventDispatcher();
+        $dispatcher = $this->createMock(EventDispatcherInterface::class);
 
         $this->assertNull($this->runner->getEventDispatcher());
         $this->assertSame($this->runner, $this->runner->setEventDispatcher($dispatcher));
