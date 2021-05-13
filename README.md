@@ -312,8 +312,9 @@ will try to recreate resources.
 
 ### Event Dispatcher
 
-Lastly, Griffin implements PSR-14 Event Dispatcher and triggers events after and
-before migrations up and down. You can use it to create a logger, as example.
+Lastly, Griffin use PSR-14 Event Dispatcher to trigger events after and before
+migrations up and down. You can use it to create a logger, as example, using
+`league/event` package or any PSR-14 implementation.
 
 ```php
 use FooBar\Database\Migration;
